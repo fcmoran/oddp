@@ -1,0 +1,1495 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>oddp.objects &mdash; oddp_project 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            oddp_project
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../oddp.objects.html">oddp.objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../oddp.tate_product.html">oddp.tate_product</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../oddp.chain_maps.html">oddp.chain_maps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../oddp.powers.html">oddp.powers</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">oddp_project</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">oddp.objects</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for oddp.objects</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module implements chains and cochains in three shifted augmented</span>
+<span class="sd">resolutions of the cyclic group: The minimal resolution, the periodic</span>
+<span class="sd">resolution and the Milnor resolution. The latter is isomorphic to a subcomplex</span>
+<span class="sd">(or a quotient) of an iterated tensor product of the chain complex of the</span>
+<span class="sd">standard simplex that is also implemented.</span>
+
+<span class="sd">Each of them is implemented as a subclass of a class **ParametricCounter**</span>
+<span class="sd">that inherits from the class dictionary: the keys of</span>
+<span class="sd">the dictionary are basis elements of these resolutions and the values are their</span>
+<span class="sd">coefficients. Each of these subclasses has at least the following attributes:</span>
+
+<span class="sd">:degree: the degree of the chain or cochain.</span>
+
+<span class="sd">:order: the order of the cyclic group.</span>
+
+<span class="sd">:dual: whether it is a cochain or a chain. Default, True.</span>
+
+<span class="sd">:torsion: if nonzero and the values of the dictionary are integers, then these</span>
+<span class="sd">    values are treated as modular integers. Default, 0.</span>
+
+<span class="sd">Each of these subclasses has at least the following methods:</span>
+
+<span class="sd">:action(): the action of the cyclic group on the chain or cochain.</span>
+
+<span class="sd">:partial(): the image of the chain or cochain by the differential.</span>
+
+<span class="sd">together with a static method ``_examples()`` that provides instances of the</span>
+<span class="sd">classes useful for testing purposes.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">random</span><span class="w"> </span><span class="kn">import</span> <span class="n">randint</span><span class="p">,</span> <span class="n">sample</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span><span class="p">,</span> <span class="n">Counter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">combinations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">oddp._utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">sign_complement</span>
+
+
+<div class="viewcode-block" id="ParametricCounter">
+<a class="viewcode-back" href="../../oddp.objects.html#oddp.objects.ParametricCounter">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ParametricCounter</span><span class="p">(</span><span class="n">Counter</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A linear combination of multigraded elements.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data: Counter</span>
+<span class="sd">    **kwargs: dict</span>
+<span class="sd">        The keys are the different gradings, the values are the value of</span>
+<span class="sd">        these gradings. If the values of the Counter data are integers, then</span>
+<span class="sd">        an additional argument **torsion** may be included in ****kwargs**</span>
+<span class="sd">        to make the linear combination over the modular integers of order</span>
+<span class="sd">        **torsion**.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    This class implements a multiset (linear combination) with coefficients</span>
+<span class="sd">    in an arbitrary ring together with parameters. It consists of a dictionary</span>
+<span class="sd">    with values in some ring, together with a couple of parameters. Two such</span>
+<span class="sd">    dictionaries with parameters can be added, subtracted and right-multiplied</span>
+<span class="sd">    by an element of the ring whenever the parameters are equal. Keys with zero</span>
+<span class="sd">    value are deleted from the dictionary.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    ----------</span>
+<span class="sd">    &gt;&gt;&gt; x = ParametricCounter({&#39;a&#39;:1, &#39;b&#39;:2}, q = 2, r = 3)</span>
+<span class="sd">    &gt;&gt;&gt; y = ParametricCounter({&#39;a&#39;:1, &#39;b&#39;:-1, &#39;c&#39;:-1}, q = 2, r = 3)</span>
+<span class="sd">    &gt;&gt;&gt; print(x + 2*y)</span>
+<span class="sd">    ParametricCounter({&#39;a&#39;: 3, &#39;c&#39;: -2}, q=2, r=3)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a new instance of ParametricCounter.</span>
+
+<span class="sd">        :param data: a dictionary or iterable</span>
+<span class="sd">        :param kwargs: an arbitrary number of keyword arguments</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ParametricCounter</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_valid</span><span class="p">()</span>
+
+    <span class="c1"># def __str__(self):</span>
+    <span class="c1">#     sol = dict.__str__(self)[:-1]</span>
+    <span class="c1">#     for key, value in self.__dict__.items():</span>
+    <span class="c1">#         sol += &#39;, &#39; + str(key) + &#39;=&#39; + str(value)</span>
+    <span class="c1">#     sol += &#39;)&#39;</span>
+    <span class="c1">#     return sol</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">sol</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">sol</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;, &#39;</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;=&#39;</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">sol</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;)&#39;</span>
+        <span class="k">return</span> <span class="n">sol</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds self and other if they share the same parameters. It is also</span>
+<span class="sd">        implemented if other is a dictionary or a Counter, in which case the</span>
+<span class="sd">        result is endowed with the parameters of self.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="bp">NotImplemented</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;torsion&#39;</span><span class="p">):</span>
+            <span class="n">torsion</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">torsion</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">torsion</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">other_value</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">other_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+                <span class="k">elif</span> <span class="n">torsion</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+</span> <span class="n">other_value</span><span class="p">)</span> <span class="o">%</span> <span class="n">torsion</span><span class="p">:</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+</span> <span class="n">other_value</span><span class="p">)</span> <span class="o">%</span> <span class="n">torsion</span>
+                <span class="k">elif</span> <span class="ow">not</span> <span class="n">torsion</span> <span class="ow">and</span> <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+</span> <span class="n">other_value</span><span class="p">:</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+</span> <span class="n">other_value</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Cannot add elements with different attributes&#39;</span>
+                             <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1"> and </span><span class="si">{</span><span class="n">other</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Subtracts other from self if they share the same parameters. It is</span>
+<span class="sd">        also implemented if other is a dictionary or a Counter, in which case</span>
+<span class="sd">        the result is endowed with the parameters of self.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="bp">NotImplemented</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;torsion&#39;</span><span class="p">):</span>
+            <span class="n">torsion</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">torsion</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">torsion</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="vm">__dict__</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">other_value</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">other_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+                <span class="k">elif</span> <span class="n">torsion</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">-</span> <span class="n">other_value</span><span class="p">)</span> <span class="o">%</span> <span class="n">torsion</span><span class="p">:</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">-</span> <span class="n">other_value</span><span class="p">)</span> <span class="o">%</span> <span class="n">torsion</span>
+                <span class="k">elif</span> <span class="ow">not</span> <span class="n">torsion</span> <span class="ow">and</span> <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">-</span> <span class="n">other_value</span><span class="p">:</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">-</span> <span class="n">other_value</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">value</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Cannot add elements with different attributes&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__iadd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        In place addition of self and other.</span>
+<span class="sd">        :param other: A ParametricCounter, a Counter or a dictionary</span>
+<span class="sd">        :return: A ParametricCounter with the same parameters as self.</span>
+<span class="sd">        if other is another ParametricCounter, then it is only defined</span>
+<span class="sd">        when self and other have the same parameters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="bp">NotImplemented</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;torsion&#39;</span><span class="p">):</span>
+            <span class="n">torsion</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">torsion</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">torsion</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="vm">__dict__</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">self_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">self_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">other</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="n">torsion</span> <span class="ow">and</span> <span class="p">(</span><span class="n">other</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+</span> <span class="n">self_value</span><span class="p">)</span> <span class="o">%</span> <span class="n">torsion</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+</span> <span class="n">other</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="o">%</span> <span class="n">torsion</span>
+                <span class="k">elif</span> <span class="p">(</span><span class="ow">not</span> <span class="n">torsion</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">other</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+</span> <span class="n">self_value</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+=</span> <span class="n">other</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">del</span> <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">return</span> <span class="bp">self</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Cannot add elements with different attributes&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__isub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        In place subtraction of self and other.</span>
+<span class="sd">        :param other: A ParametricCounter, a Counter or a dictionary</span>
+<span class="sd">        :return: A ParametricCounter with the same parameters as self.</span>
+<span class="sd">        if other is another ParametricCounter, then it is only defined</span>
+<span class="sd">        when self and other have the same parameters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="bp">NotImplemented</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;torsion&#39;</span><span class="p">):</span>
+            <span class="n">torsion</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">torsion</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">torsion</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="vm">__dict__</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">self_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">self_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">other</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="n">torsion</span> <span class="ow">and</span> <span class="p">(</span><span class="n">self_value</span> <span class="o">-</span> <span class="n">other</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="o">%</span> <span class="n">torsion</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">self_value</span> <span class="o">-</span> <span class="n">other</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="o">%</span> <span class="n">torsion</span>
+                <span class="k">elif</span> <span class="ow">not</span> <span class="n">torsion</span> <span class="ow">and</span> <span class="n">self_value</span> <span class="o">-</span> <span class="n">other</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+                    <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">-=</span> <span class="n">other</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">del</span> <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">return</span> <span class="bp">self</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Cannot add elements with different attributes&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__neg__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The negation of self.</span>
+<span class="sd">        :return: A ParametricCounter.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;torsion&#39;</span><span class="p">):</span>
+            <span class="n">torsion</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">torsion</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">torsion</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">torsion</span><span class="p">:</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">value</span><span class="p">)</span> <span class="o">%</span> <span class="n">torsion</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">value</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__rmul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param other: anything that can be multiplied by the coefficients of</span>
+<span class="sd">        self.</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;torsion&#39;</span><span class="p">):</span>
+            <span class="n">torsion</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">torsion</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">torsion</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">other</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">torsion</span> <span class="ow">and</span> <span class="p">(</span><span class="n">other</span> <span class="o">*</span> <span class="n">value</span><span class="p">)</span> <span class="o">%</span> <span class="n">torsion</span><span class="p">:</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">other</span> <span class="o">*</span> <span class="n">value</span><span class="p">)</span> <span class="o">%</span> <span class="n">torsion</span>
+                <span class="k">elif</span> <span class="ow">not</span> <span class="n">torsion</span> <span class="ow">and</span> <span class="n">other</span> <span class="o">*</span> <span class="n">value</span><span class="p">:</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">other</span> <span class="o">*</span> <span class="n">value</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__truediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;torsion&#39;</span><span class="p">):</span>
+            <span class="n">torsion</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">torsion</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">torsion</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">other</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">torsion</span><span class="p">:</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">value</span> <span class="o">*</span> <span class="nb">pow</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">torsion</span><span class="p">))</span> <span class="o">%</span> <span class="n">torsion</span>
+                <span class="k">elif</span> <span class="ow">not</span> <span class="n">torsion</span><span class="p">:</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span> <span class="o">/</span> <span class="n">other</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ZeroDivisionError</span><span class="p">(</span><span class="s1">&#39;Cannot divide by zero&#39;</span><span class="p">)</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="c1"># def update(self, other):</span>
+    <span class="c1">#     if not isinstance(other, dict):</span>
+    <span class="c1">#         return NotImplemented</span>
+    <span class="c1">#     if hasattr(self, &#39;torsion&#39;):</span>
+    <span class="c1">#         torsion = self.torsion</span>
+    <span class="c1">#     else:</span>
+    <span class="c1">#         torsion = 0</span>
+    <span class="c1">#     for key, value in other.items():</span>
+    <span class="c1">#         self_value = self.get(key)</span>
+    <span class="c1">#         if self_value is None:</span>
+    <span class="c1">#             self[key] = other[key]</span>
+    <span class="c1">#         elif torsion and (other[key] + self_value) % torsion:</span>
+    <span class="c1">#             self[key] = (self[key] + other[key]) % torsion</span>
+    <span class="c1">#         elif (not torsion) and (other[key] + self_value):</span>
+    <span class="c1">#             self[key] += other[key]</span>
+    <span class="c1">#         else:</span>
+    <span class="c1">#             del self[key]</span>
+    <span class="c1">#     return self</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;torsion&#39;</span><span class="p">):</span>
+            <span class="n">torsion</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">torsion</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">torsion</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">torsion</span><span class="p">:</span>
+            <span class="n">zeros</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">%</span> <span class="n">torsion</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">%</span> <span class="n">torsion</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">zeros</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">zeros</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">zeros</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates an instance with the same parameters as self.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data: dict, default None</span>
+<span class="sd">            If None, an empty dictionary is used.</span>
+<span class="sd">        kwargs: dict</span>
+<span class="sd">            These attributes are added or overwritten</span>
+<span class="sd">            over the attributes of self.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ParametricCounter</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ParametricCounter({3: 4},q=3 ,p=5)</span>
+<span class="sd">        &gt;&gt;&gt; y = x.create(p=7, r=0)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ParametricCounter(, q=3, p=7, r=0)</span>
+<span class="sd">        &gt;&gt;&gt; y = x.create({1: -2}, p=7, r=0)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ParametricCounter({1: -2}, q=3, p=7, r=0)</span>
+
+<span class="sd">        :meta private:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">new_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">new_args</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">new_args</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :meta private:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+    <span class="c1"># def get_ring_type(self):</span>
+    <span class="c1">#     if self:</span>
+    <span class="c1">#         return next(iter(self.values()))</span>
+    <span class="c1">#     else:</span>
+    <span class="c1">#         return None</span>
+
+
+<div class="viewcode-block" id="MinimalCochain">
+<a class="viewcode-back" href="../../oddp.objects.html#oddp.objects.MinimalCochain">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MinimalCochain</span><span class="p">(</span><span class="n">ParametricCounter</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A (co)chain of the shifted augmented minimal resolution of the cyclic</span>
+<span class="sd">    group.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    degree: int</span>
+<span class="sd">        The degree of the cochain (nonpositive if ``dual=True``, nonnegative</span>
+<span class="sd">        if ``dual=False``).</span>
+<span class="sd">    order: int</span>
+<span class="sd">        The order of the cyclic group.</span>
+<span class="sd">    dual: bool, default=True</span>
+<span class="sd">        If ``dual=True``, cochains are being implemented, if ``dual=False``,</span>
+<span class="sd">        chains are being implemented.</span>
+<span class="sd">    torsion: int, default=0.</span>
+<span class="sd">        If the values of the dictionary data are integers, then they are</span>
+<span class="sd">        interpreted as modular integers with modulus=torsion.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Let :math:`R` be a commutative ring with unit, such as</span>
+<span class="sd">    :math:`\mathbb Z` or :math:`\mathbb Z/r Z`. The shifted augmented minimal</span>
+<span class="sd">    resolution of the cyclic group :math:`\mathbb C_r` of order `r` is the</span>
+<span class="sd">    chain complex</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        R \leftarrow R\mathbb C_r\langle e_1\rangle \leftarrow</span>
+<span class="sd">        R\mathbb C_r\langle e_2\rangle \leftarrow R\mathbb C_r\langle</span>
+<span class="sd">        e_3\rangle</span>
+<span class="sd">        \ldots</span>
+
+<span class="sd">    concentrated in nonnegative degrees. The differential is given by</span>
+
+<span class="sd">    .. math:</span>
+<span class="sd">        \partial(e_{2k}) = \rho(e_{2k-1})-e_{2k-1}</span>
+<span class="sd">        \partial(e_{2k+1}) = (1 + \rho + \rho^2 + \ldots + \rho^{r-1})(e_{2k})</span>
+<span class="sd">        \partial(e_{1}) = 1.</span>
+
+<span class="sd">    where :math:`\rho` denotes the standard generator of the cyclic group.</span>
+<span class="sd">    Instances of this class are elements of this resolution or its dual.</span>
+<span class="sd">    For example, the cochain :math:`e_3^\vee + 4\cdot (\rho^2e_3)^\vee`</span>
+<span class="sd">    in the shifted augmented minimal resolution of the cyclic group of order 5</span>
+<span class="sd">    with integer coefficients is created as</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        MinimalCochain({0:1, 2:4}, degree=-3, order=5)</span>
+
+<span class="sd">    while the chain :math:`2\cdot e_3 + \rho^4e_3` in the shifted augmented</span>
+<span class="sd">    minimal resolution of the cyclic group of order 5 with mod 5 coefficients</span>
+<span class="sd">    is created as</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        MinimalCochain({0:2, 4:1}, degree=3, order=5, dual=False, torsion=5)</span>
+
+<span class="sd">    To create chains or cochains in degree 0 use the key 0:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        MinimalCochain({0:3}, degree=0, order=5)</span>
+
+<span class="sd">    Observe in the first example that</span>
+<span class="sd">    :math:`\rho(e_k^\vee) = (\rho^{-1}e_k)^\vee`</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    [1] Cantero-Morán, F., Medina-Mardones, A., Steenrod operations and Tate</span>
+<span class="sd">    resolutions.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dual</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">torsion</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;degree&#39;</span><span class="p">:</span> <span class="n">degree</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span> <span class="n">order</span><span class="p">,</span> <span class="s1">&#39;dual&#39;</span><span class="p">:</span> <span class="n">dual</span><span class="p">,</span>
+                  <span class="s1">&#39;torsion&#39;</span><span class="p">:</span> <span class="n">torsion</span><span class="p">}</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">=</span> <span class="n">degree</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="n">order</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dual</span> <span class="o">=</span> <span class="n">dual</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">torsion</span> <span class="o">=</span> <span class="n">torsion</span>
+
+<div class="viewcode-block" id="MinimalCochain.action">
+<a class="viewcode-back" href="../../oddp.objects.html#oddp.objects.MinimalCochain.action">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The action of a generator of the cyclic group on self.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        i: int, default=1</span>
+<span class="sd">            The generator that is acting.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        MinimalCochain</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        The action of the generator :math:`\rho^i` of the cyclic group on</span>
+<span class="sd">        self.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; cochain = MinimalCochain({0:1}, degree=-2, order=3, dual=True, torsion=0)</span>
+<span class="sd">        &gt;&gt;&gt; cochain.action()</span>
+<span class="sd">        MinimalCochain({2: 1}, degree=-2, order=3, dual=True, torsion=0)</span>
+<span class="sd">        &gt;&gt;&gt; chain = MinimalCochain({1: 1}, degree=2, order=3, dual=False, torsion=0)</span>
+<span class="sd">        &gt;&gt;&gt; chain.action()</span>
+<span class="sd">        MinimalCochain({2: 1}, degree=2, order=3, dual=False, torsion=0)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">({</span><span class="mi">0</span><span class="p">:</span> <span class="n">c</span> <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()})</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">new_i</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">dual</span> <span class="o">*</span> <span class="n">i</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">({(</span><span class="n">j</span> <span class="o">+</span> <span class="n">new_i</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">:</span> <span class="n">c</span>
+                                <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()})</span></div>
+
+
+<div class="viewcode-block" id="MinimalCochain.partial">
+<a class="viewcode-back" href="../../oddp.objects.html#oddp.objects.MinimalCochain.partial">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">partial</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The differential of self.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        MinimalCochain</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; cochain = MinimalCochain({0:1}, degree=-2, order=3, dual=True, torsion=0)</span>
+<span class="sd">        &gt;&gt;&gt; cochain.partial()</span>
+<span class="sd">        MinimalCochain({0: -1, 1: -1, 2: -1}, degree=-3, order=3, dual=True, torsion=0)</span>
+<span class="sd">        &gt;&gt;&gt; chain = MinimalCochain({1: 1}, degree=2, order=3, dual=False, torsion=0)</span>
+<span class="sd">        &gt;&gt;&gt; chain.partial()</span>
+<span class="sd">        MinimalCochain({2: 1, 1: -1}, degree=1, order=3, dual=False, torsion=0)</span>
+
+<span class="sd">        :meta public:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dual</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">sol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">degree</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">total</span><span class="p">()</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="n">j</span><span class="p">:</span> <span class="n">a</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">)}</span>
+                <span class="n">sol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sol</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">action</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="p">)</span>
+                <span class="n">sol</span><span class="o">.</span><span class="n">degree</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">sol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">degree</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">sol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">action</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span>
+                <span class="n">sol</span><span class="o">.</span><span class="n">degree</span> <span class="o">=</span> <span class="n">sol</span><span class="o">.</span><span class="n">degree</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">total</span><span class="p">()</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="n">a</span><span class="p">}</span>
+                <span class="n">sol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">total</span><span class="p">()</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="n">j</span><span class="p">:</span> <span class="n">a</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">)}</span>
+                <span class="n">sol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">sol</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Checks whether self is a valid Minimal Cochain.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">ParametricCounter</span><span class="o">.</span><span class="n">_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dual</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The chain complex is trivial in this degree:&#39;</span>
+                             <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[(),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,)]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The only generator in degree 0 is 0: </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">))):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Not a valid element: </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_examples</span><span class="p">(</span><span class="n">order_tuple</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">order_tuple</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">MinimalCochain</span><span class="p">({</span><span class="mi">0</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+            <span class="k">yield</span> <span class="n">MinimalCochain</span><span class="p">({</span><span class="mi">0</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">r</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">r</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
+                        <span class="k">for</span> <span class="n">dual</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">]:</span>
+                            <span class="k">yield</span> <span class="n">MinimalCochain</span><span class="p">({</span><span class="n">j</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="n">dual</span> <span class="o">*</span> <span class="n">q</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span>
+                                                 <span class="n">dual</span><span class="p">)</span></div>
+
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Simp</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A generator of the group of cochains of the standard simplex of</span>
+<span class="sd">    dimension n.</span>
+
+<span class="sd">    :meta private:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">face</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">dual</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sphere</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">augmented</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">face</span> <span class="o">=</span> <span class="n">face</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">=</span> <span class="n">dim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dual</span> <span class="o">=</span> <span class="n">dual</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sphere</span> <span class="o">=</span> <span class="n">sphere</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">augmented</span> <span class="o">=</span> <span class="n">augmented</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">%</span> <span class="n">r</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dual</span><span class="p">:</span>
+            <span class="n">first</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">((</span><span class="n">a</span> <span class="o">-</span> <span class="n">i</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span> <span class="k">if</span> <span class="n">a</span> <span class="o">-</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="n">second</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">((</span><span class="n">a</span> <span class="o">-</span> <span class="n">i</span> <span class="o">+</span> <span class="n">r</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span> <span class="k">if</span> <span class="n">a</span> <span class="o">-</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">second</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">((</span><span class="n">a</span> <span class="o">+</span> <span class="n">i</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span> <span class="k">if</span> <span class="n">a</span> <span class="o">+</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">r</span><span class="p">))</span>
+            <span class="n">first</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">((</span><span class="n">a</span> <span class="o">+</span> <span class="n">i</span> <span class="o">-</span> <span class="n">r</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span> <span class="k">if</span> <span class="n">a</span> <span class="o">+</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="n">r</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">first</span> <span class="o">+</span> <span class="n">second</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">first</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">second</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">partial</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Dual of the boundary of a coface A in the standard (r-1)-simplex,</span>
+<span class="sd">        output as an iterable. It does not have the sign (-1)** (deg + 1)</span>
+
+<span class="sd">        :meta private:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">face</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dual</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">face</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">augmented</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="k">yield</span> <span class="p">(</span><span class="n">v</span><span class="p">,),</span> <span class="mi">1</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">face</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">sphere</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">face</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                    <span class="k">yield</span> <span class="p">(</span><span class="n">v</span><span class="p">,)</span> <span class="o">+</span> <span class="n">face</span><span class="p">,</span> <span class="mi">1</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">face</span><span class="p">)):</span>
+                    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">face</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">face</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
+                        <span class="k">yield</span> <span class="n">face</span><span class="p">[:</span> <span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">v</span><span class="p">,)</span> <span class="o">+</span> <span class="n">face</span><span class="p">[</span><span class="n">i</span><span class="p">:],</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="n">i</span>
+                <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">face</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="k">yield</span> <span class="n">face</span> <span class="o">+</span> <span class="p">(</span><span class="n">v</span><span class="p">,),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">face</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">face</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">augmented</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">face</span><span class="p">):</span>
+                    <span class="k">yield</span> <span class="n">face</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">face</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:],</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="n">i</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">alex</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The Alexander dual of tau in Delta n. If ``dual=True``, the source are</span>
+<span class="sd">        cochains, otherwise chains.</span>
+
+<span class="sd">        :meta private:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">new_face</span> <span class="o">=</span> <span class="p">(</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">)</span>
+        <span class="n">new_face</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">new_face</span><span class="p">)</span>
+        <span class="n">new_a</span> <span class="o">=</span> <span class="n">sign_complement</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dual</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">new_face</span><span class="p">,</span> <span class="n">new_a</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">p_sigma</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">))</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="n">i</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_examples</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">combinations</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">m</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">dual</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">]:</span>
+                        <span class="k">yield</span> <span class="n">face</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">dual</span>
+
+
+<div class="viewcode-block" id="PerCochain">
+<a class="viewcode-back" href="../../oddp.objects.html#oddp.objects.PerCochain">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PerCochain</span><span class="p">(</span><span class="n">ParametricCounter</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A (co)chain of the shifted augmented periodic resolution of the cyclic</span>
+<span class="sd">    group.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    degree: int</span>
+<span class="sd">        The degree of the cochain (nonpositive if ``dual=True``, nonnegative</span>
+<span class="sd">        if ``dual=False``).</span>
+<span class="sd">    order: int</span>
+<span class="sd">        The order of the cyclic group.</span>
+<span class="sd">    dual: bool, default=True</span>
+<span class="sd">        If ``dual=True``, cochains are being implemented, if ``dual=False``,</span>
+<span class="sd">        chains</span>
+<span class="sd">        are being implemented.</span>
+<span class="sd">    torsion: int, default=0.</span>
+<span class="sd">        If the values of the dictionary data are integers, then they are</span>
+<span class="sd">        interpreted as modular integers with modulus=torsion. If ``order``</span>
+<span class="sd">        is the even prime, then modular coefficients with ``torsion=order``</span>
+<span class="sd">        must be used.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Let :math:`R` be a commutative ring with unit, such as</span>
+<span class="sd">    :math:`\mathbb Z` or :math:`\mathbb Z/r \mathbb Z`. Let</span>
+<span class="sd">    :math:`\mathrm{N}(\partial\Delta^{r-1})` be the</span>
+<span class="sd">    normalised chain complex of the boundary of the standard simplex of</span>
+<span class="sd">    dimension `r-1`. Permuting the vertices</span>
+<span class="sd">    of the simplex defines an action of the cyclic group :math:`\mathbb C_r`</span>
+<span class="sd">    of order `r` on this chain complex.</span>
+
+<span class="sd">    This complex has an augmentation map of degree `0` that sends every vertex</span>
+<span class="sd">    of the simplex to the unit in the ring `R`. It also has a coaugmentation</span>
+<span class="sd">    map of degree `r-2` that sends the unit to the boundary of the top face of</span>
+<span class="sd">    :math:`\Delta^{r-1}` with its standard orientation. The composition of</span>
+<span class="sd">    these two maps defines a differential of degree `r-2` with which</span>
+<span class="sd">    :math:`\bigoplus_{j=0}^{\infty} \mathrm{s}^{j(r-1)}\mathrm{N}(</span>
+<span class="sd">    \partial\Delta^{r-1})`</span>
+<span class="sd">    becomes a contractible chain complex with an augmentation to `R`.</span>
+
+<span class="sd">    The suspension of this augmented chain complex is the shifted augmented</span>
+<span class="sd">    Periodic resolution of the cyclic group of order `r`.</span>
+
+<span class="sd">    Instances of this class are elements of this resolution. For example,</span>
+<span class="sd">    the generator :math:`2\cdot (1,3) + 3\cdot (0,4)` in degree 6 in the</span>
+<span class="sd">    shifted augmented periodic resolution of the cyclic group of order 5</span>
+<span class="sd">    with integer coefficients is created as</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        PerCochain({(1,3):2, (0,4):3}, degree=6, order=5, dual=False)</span>
+
+<span class="sd">    .. Warning::</span>
+<span class="sd">        The faces of the simplex (for example, (1,3) or (0,4)) are</span>
+<span class="sd">        always assumed to be ordered.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">degree</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">dual</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">torsion</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;degree&#39;</span><span class="p">:</span> <span class="n">degree</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span> <span class="n">order</span><span class="p">,</span> <span class="s1">&#39;dual&#39;</span><span class="p">:</span> <span class="n">dual</span><span class="p">,</span>
+                  <span class="s1">&#39;torsion&#39;</span><span class="p">:</span> <span class="n">torsion</span><span class="p">}</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">=</span> <span class="n">degree</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="n">order</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dual</span> <span class="o">=</span> <span class="n">dual</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">torsion</span> <span class="o">=</span> <span class="n">torsion</span>
+
+<div class="viewcode-block" id="PerCochain.action">
+<a class="viewcode-back" href="../../oddp.objects.html#oddp.objects.PerCochain.action">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The action of a generator of the cyclic group on self.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        i: int, default=1</span>
+<span class="sd">            The generator of the cyclic group that is acting.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        PerCochain</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; cochain = PerCochain({(0, 2): 1}, degree=-2, order=3, dual=True, torsion=0)</span>
+<span class="sd">        &gt;&gt;&gt; cochain.action()</span>
+<span class="sd">        PerCochain({(1, 2): -1}, degree=-2, order=3, dual=True, torsion=0)</span>
+<span class="sd">        &gt;&gt;&gt; chain = PerCochain({(0, 2): 1}, degree=2, order=3, dual=False, torsion=0)</span>
+<span class="sd">        &gt;&gt;&gt; chain.action()</span>
+<span class="sd">        PerCochain({(0, 1): -1}, degree=2, order=3, dual=False, torsion=0)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">face</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">new_face</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">Simp</span><span class="p">(</span><span class="n">face</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dual</span><span class="p">)</span><span class="o">.</span><span class="n">action</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">sol</span> <span class="o">+=</span> <span class="n">sol</span><span class="o">.</span><span class="n">create</span><span class="p">({</span><span class="n">new_face</span><span class="p">:</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span><span class="p">})</span>
+        <span class="k">return</span> <span class="n">sol</span></div>
+
+
+<div class="viewcode-block" id="PerCochain.partial">
+<a class="viewcode-back" href="../../oddp.objects.html#oddp.objects.PerCochain.partial">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">partial</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The differential of self.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        PerCochain</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; cochain = PerCochain({(0, 2): 1}, degree=-2, order=3, dual=True, torsion=0)</span>
+<span class="sd">        &gt;&gt;&gt; cochain.partial()</span>
+<span class="sd">        PerCochain({(0,): 1, (1,): 1, (2,): 1}, degree=-3, order=3, dual=True, torsion=0)</span>
+<span class="sd">        &gt;&gt;&gt; chain = PerCochain({(0, 2): 1}, degree=2, order=3, dual=False, torsion=0)</span>
+<span class="sd">        &gt;&gt;&gt; chain.partial()</span>
+<span class="sd">        PerCochain({(2,): 1, (0,): -1}, degree=1, order=3, dual=False, torsion=0)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">q</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">dual</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">degree</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dual</span>
+        <span class="n">sol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">degree</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">dual_sign</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="p">((</span><span class="o">-</span><span class="n">q</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">dual</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">face</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">dual</span> <span class="ow">and</span> <span class="n">q</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">q</span> <span class="o">%</span> <span class="p">(</span><span class="n">r</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">j</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">k</span><span class="p">:</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">face</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="n">r</span><span class="p">)))</span>
+                <span class="n">sol</span> <span class="o">+=</span> <span class="n">sol</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+                    <span class="p">{(</span><span class="n">v</span><span class="p">,):</span> <span class="n">a</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="n">j</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">dual_sign</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">r</span><span class="p">)})</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">dual</span> <span class="ow">and</span> <span class="n">q</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">q</span> <span class="o">%</span> <span class="p">(</span><span class="n">r</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">sol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">total</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_sigma</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">new_face</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">Simp</span><span class="p">(</span><span class="n">face</span><span class="p">,</span> <span class="n">r</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dual</span><span class="p">)</span><span class="o">.</span><span class="n">partial</span><span class="p">():</span>
+                    <span class="n">sol</span> <span class="o">+=</span> <span class="n">sol</span><span class="o">.</span><span class="n">create</span><span class="p">({</span><span class="n">new_face</span><span class="p">:</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span> <span class="o">*</span> <span class="n">dual_sign</span><span class="p">})</span>
+        <span class="k">return</span> <span class="n">sol</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">ParametricCounter</span><span class="o">.</span><span class="n">_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">r</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">dual</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">degree</span>
+        <span class="n">qq</span> <span class="o">=</span> <span class="n">q</span> <span class="o">%</span> <span class="p">(</span><span class="n">r</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="n">q</span> <span class="o">%</span> <span class="p">(</span><span class="n">r</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">q</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="k">else</span> <span class="n">r</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">qq</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">face</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;the degree </span><span class="si">{</span><span class="n">q</span><span class="si">}</span><span class="s1"> and the length of </span><span class="si">{</span><span class="n">face</span><span class="si">}</span><span class="s1"> do not match.&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">face</span><span class="p">))</span> <span class="o">!=</span> <span class="n">face</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;All faces must be sorted: </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">(</span><span class="n">face</span><span class="p">)</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">r</span><span class="p">))):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;All faces must be subfaces of the r-1 simplex: </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PerCochain.p_sigma">
+<a class="viewcode-back" href="../../oddp.objects.html#oddp.objects.PerCochain.p_sigma">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">p_sigma</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">degree</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The (dual of the) differential of the top face of the (r-1)-simplex.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        degree: int</span>
+<span class="sd">            A multiple of **self.order** - 1.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        PerCochain</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; cochain = PerCochain({(0, 2): 1}, degree=-2, order=3, dual=True, torsion=0)</span>
+<span class="sd">        &gt;&gt;&gt; cochain.p_sigma(-6)</span>
+<span class="sd">        PerCochain({(1, 2): 1, (0, 1): 1, (0, 2): -1}, degree=-6, order=3, dual=True, torsion=0)</span>
+<span class="sd">        &gt;&gt;&gt; chain = PerCochain({(0, 2): 1}, degree=2, order=3, dual=False, torsion=0)</span>
+<span class="sd">        &gt;&gt;&gt; chain.p_sigma(4)</span>
+<span class="sd">        PerCochain({(1, 2): 1, (0, 1): 1, (0, 2): -1}, degree=4, order=3, dual=False, torsion=0)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">degree</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">degree</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Degree must be a multiple of (order - 1)&#39;</span><span class="p">)</span>
+        <span class="n">sol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">degree</span><span class="o">=</span><span class="n">degree</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">face</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">Simp</span><span class="p">((),</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">p_sigma</span><span class="p">():</span>
+            <span class="n">sol</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">({</span><span class="n">face</span><span class="p">:</span> <span class="n">a</span><span class="p">},</span> <span class="n">degree</span><span class="o">=</span><span class="n">degree</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">sol</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_examples</span><span class="p">(</span><span class="n">order_tuple</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">order_tuple</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">r</span> <span class="o">+</span> <span class="mi">5</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">dual</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">q</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="k">yield</span> <span class="n">PerCochain</span><span class="p">({():</span> <span class="mi">1</span><span class="p">},</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="n">dual</span> <span class="o">*</span> <span class="n">q</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">dual</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">m</span> <span class="o">=</span> <span class="n">q</span> <span class="o">%</span> <span class="p">(</span><span class="n">r</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">m</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="n">m</span> <span class="o">=</span> <span class="n">r</span> <span class="o">-</span> <span class="mi">1</span>
+                        <span class="n">face</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">sample</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">r</span><span class="p">),</span> <span class="n">m</span><span class="p">)))</span>
+                        <span class="k">yield</span> <span class="n">PerCochain</span><span class="p">({</span><span class="n">face</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="n">dual</span> <span class="o">*</span> <span class="n">q</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">dual</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="MilnorCochain">
+<a class="viewcode-back" href="../../oddp.objects.html#oddp.objects.MilnorCochain">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MilnorCochain</span><span class="p">(</span><span class="n">ParametricCounter</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A (co)chain of the shifted augmented Milnor resolution of the cyclic group.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    degree: int</span>
+<span class="sd">        The degree of the cochain (nonpositive if ``dual=True``, nonnegative</span>
+<span class="sd">        if ``dual=False``).</span>
+<span class="sd">    order: int</span>
+<span class="sd">        The order of the cyclic group.</span>
+<span class="sd">    n: int</span>
+<span class="sd">        n+1 is the number of tensor factors in the resolution.</span>
+<span class="sd">    dual: bool, default=True</span>
+<span class="sd">        If ``dual=True``, cochains are being implemented, if ``dual=False``,</span>
+<span class="sd">        chains</span>
+<span class="sd">        are being implemented.</span>
+<span class="sd">    torsion: int, default=0.</span>
+<span class="sd">        If the values of the dictionary data are integers, then they are</span>
+<span class="sd">        interpreted as modular integers with modulus=torsion.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Let :math:`R` be a commutative ring with unit, such as</span>
+<span class="sd">    :math:`\mathbb Z` or :math:`\mathbb Z/r \mathbb Z`. Let</span>
+<span class="sd">    :math:`\mathrm{N}(\partial\Delta^{r-1})` be the</span>
+<span class="sd">    normalised chain complex of the boundary of the standard simplex of</span>
+<span class="sd">    dimension `r-1`. Permuting the vertices of the simplex defines an action</span>
+<span class="sd">    of the cyclic group :math:`\mathbb C_r` of order `r` on this chain complex.</span>
+
+<span class="sd">    The Milnor resolution (of size `n`) of the cyclic group of order `r` is</span>
+<span class="sd">    the tensor product :math:`\mathrm{N}(\partial \Delta_+^{r-1})^{\otimes</span>
+<span class="sd">    n+1}`,</span>
+<span class="sd">    with its natural augmentation over the ring `R`, and suspended once.</span>
+
+<span class="sd">    Instances of this class are elements of this resolution.</span>
+
+<span class="sd">    .. Warning::</span>
+<span class="sd">        The faces of the simplex (for example, (1,3) or (0,4)) are</span>
+<span class="sd">        always assumed to be ordered.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dual</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                 <span class="n">torsion</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;degree&#39;</span><span class="p">:</span> <span class="n">degree</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span> <span class="n">order</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">:</span> <span class="n">n</span><span class="p">,</span> <span class="s1">&#39;dual&#39;</span><span class="p">:</span> <span class="n">dual</span><span class="p">,</span>
+                  <span class="s1">&#39;torsion&#39;</span><span class="p">:</span> <span class="n">torsion</span><span class="p">}</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">=</span> <span class="n">degree</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="n">order</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dual</span> <span class="o">=</span> <span class="n">dual</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">torsion</span> <span class="o">=</span> <span class="n">torsion</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span>
+
+<div class="viewcode-block" id="MilnorCochain.default_rule">
+<a class="viewcode-back" href="../../oddp.objects.html#oddp.objects.MilnorCochain.default_rule">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">default_rule</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A tuple that encodes the default endomorphism of the Milnor resolution.</span>
+
+<span class="sd">        This tuple encodes the endomorphism :math:`\alpha = (\rho^{r}\otimes</span>
+<span class="sd">        \rho^{r-1}\otimes \ldots \otimes \rho^{r-n})` of the Milnor resolution.</span>
+<span class="sd">        The composition :math:`\alpha\circ\beta` is implemented in the function</span>
+<span class="sd">        ``chain_maps.abc``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">((</span><span class="o">-</span><span class="n">j</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)))</span></div>
+
+
+<div class="viewcode-block" id="MilnorCochain.inner_action">
+<a class="viewcode-back" href="../../oddp.objects.html#oddp.objects.MilnorCochain.inner_action">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">inner_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The endomorphism of the Milnor resolution defined by `rule`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        rule: tuple[int]</span>
+<span class="sd">            A tuple encoding **self.n** + 1 generators of the cyclic group.</span>
+<span class="sd">            If None, defaults to *default_rule()*.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        MilnorCochain</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">r</span><span class="p">,</span> <span class="n">dual</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dual</span>
+        <span class="k">if</span> <span class="n">rule</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">rule</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_rule</span><span class="p">()</span>
+        <span class="n">sol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">tensor</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">new_tensor</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">new_a</span> <span class="o">=</span> <span class="n">a</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">factor</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tensor</span><span class="p">):</span>
+                <span class="n">new_factor</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">Simp</span><span class="p">(</span><span class="n">factor</span><span class="p">,</span> <span class="n">r</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dual</span><span class="p">)</span><span class="o">.</span><span class="n">action</span><span class="p">(</span><span class="n">rule</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+                <span class="n">new_tensor</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_factor</span><span class="p">)</span>
+                <span class="n">new_a</span> <span class="o">=</span> <span class="n">new_a</span> <span class="o">*</span> <span class="n">b</span>
+            <span class="n">sol</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">({</span><span class="nb">tuple</span><span class="p">(</span><span class="n">new_tensor</span><span class="p">):</span> <span class="n">new_a</span><span class="p">})</span>
+        <span class="k">return</span> <span class="n">sol</span></div>
+
+
+<div class="viewcode-block" id="MilnorCochain.action">
+<a class="viewcode-back" href="../../oddp.objects.html#oddp.objects.MilnorCochain.action">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The diagonal action of the cyclic group on self.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        i: int</span>
+<span class="sd">            The generator of the cyclic group that is acting on self.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        MilnorCochain</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; cochain = MilnorCochain({((0,2),(2,)):1}, degree=-3, order=3, n=1, dual=True, torsion=0)</span>
+<span class="sd">        &gt;&gt;&gt; cochain.action()</span>
+<span class="sd">        MilnorCochain({((1, 2), (1,)): -1}, degree=-3, order=3, n=1, dual=True, torsion=0)</span>
+<span class="sd">        &gt;&gt;&gt; chain = MilnorCochain({((0,2),(2,)):1}, degree=3, order=3, n=1, dual=False, torsion=0)</span>
+<span class="sd">        &gt;&gt;&gt; chain.action()</span>
+<span class="sd">        MilnorCochain({((0, 1), (0,)): -1}, degree=3, order=3, n=1, dual=False, torsion=0)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">inner_action</span><span class="p">((</span><span class="n">i</span><span class="p">,)</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="MilnorCochain.partial">
+<a class="viewcode-back" href="../../oddp.objects.html#oddp.objects.MilnorCochain.partial">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">partial</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The differential of self.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        MilnorCochain</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; cochain = MilnorCochain({((0,2),(2,)):1}, degree=-3, order=3, n=1, dual=True, torsion=0)</span>
+<span class="sd">        &gt;&gt;&gt; cochain.partial()</span>
+<span class="sd">        MilnorCochain({((0, 2), (0, 2)): 1, ((0, 2), (1, 2)): 1}, degree=-4, order=3, n=1, dual=True, torsion=0)</span>
+<span class="sd">        &gt;&gt;&gt; chain = MilnorCochain({((0,2),(2,)):1}, degree=3, order=3, n=1, dual=False, torsion=0)</span>
+<span class="sd">        &gt;&gt;&gt; chain.partial()</span>
+<span class="sd">        MilnorCochain({((2,), (2,)): 1, ((0, 2), ()): 1, ((0,), (2,)): -1}, degree=2, order=3, n=1, dual=False, torsion=0)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">sol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">degree</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">dual_sign</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="p">((</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dual</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">tensor</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">factor</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tensor</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">new_factor</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">Simp</span><span class="p">(</span><span class="n">factor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">dual</span><span class="p">)</span><span class="o">.</span><span class="n">partial</span><span class="p">():</span>
+                    <span class="n">new_tensor</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">tensor</span><span class="p">)</span>
+                    <span class="n">new_tensor</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_factor</span>
+                    <span class="n">new_tensor</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">new_tensor</span><span class="p">)</span>
+                    <span class="n">sol</span> <span class="o">+=</span> <span class="n">sol</span><span class="o">.</span><span class="n">create</span><span class="p">({</span><span class="n">new_tensor</span><span class="p">:</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span> <span class="o">*</span> <span class="n">c</span> <span class="o">*</span> <span class="n">dual_sign</span><span class="p">})</span>
+                <span class="n">b</span> <span class="o">=</span> <span class="n">b</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="nb">len</span><span class="p">(</span><span class="n">factor</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">sol</span></div>
+
+
+<div class="viewcode-block" id="MilnorCochain.p_sigma">
+<a class="viewcode-back" href="../../oddp.objects.html#oddp.objects.MilnorCochain.p_sigma">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">p_sigma</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The (dual of the) differential of the top face of the (</span>
+<span class="sd">        **self.order** - 1)-simplex.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        MilnorCochain</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; cochain = MilnorCochain({((0,2),(2,)):1}, degree=-3, order=3, n=1, dual=True, torsion=0)</span>
+<span class="sd">        &gt;&gt;&gt; cochain.p_sigma()</span>
+<span class="sd">        MilnorCochain({((1, 2),): 1, ((0, 1),): 1, ((0, 2),): -1}, degree=2, order=3, n=0, dual=False, torsion=0)</span>
+<span class="sd">        &gt;&gt;&gt; chain = MilnorCochain({((0,2),(2,)):1}, degree=3, order=3, n=1, dual=False, torsion=0)</span>
+<span class="sd">        &gt;&gt;&gt; chain.p_sigma()</span>
+<span class="sd">        MilnorCochain({((1, 2),): 1, ((0, 1),): 1, ((0, 2),): -1}, degree=2, order=3, n=0, dual=False, torsion=0)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">degree</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dual</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">face</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">Simp</span><span class="p">((),</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">p_sigma</span><span class="p">():</span>
+            <span class="n">sol</span> <span class="o">+=</span> <span class="n">sol</span><span class="o">.</span><span class="n">create</span><span class="p">({(</span><span class="n">face</span><span class="p">,):</span> <span class="n">a</span><span class="p">})</span>
+        <span class="k">return</span> <span class="n">sol</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">ParametricCounter</span><span class="o">.</span><span class="n">_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">element</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;len of MilnorCochain does not match its n: </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">sum</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">factor</span><span class="p">)</span> <span class="k">for</span> <span class="n">factor</span> <span class="ow">in</span> <span class="n">element</span><span class="p">))</span> <span class="o">!=</span> <span class="p">(</span>
+            <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">dual</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">degree</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;MilnorCochain does not match its expected degree:&#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">factor</span> <span class="ow">in</span> <span class="n">element</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">(</span><span class="n">factor</span><span class="p">)</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">)):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s1">&#39;Some factors of this MilnorCochain are not faces &#39;</span>
+                        <span class="sa">f</span><span class="s1">&#39;of the simplex of dimension </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s1">: &#39;</span>
+                        <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">factor</span><span class="p">))</span> <span class="o">!=</span> <span class="n">factor</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;All faces must be sorted: </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MilnorCochain.evaluate">
+<a class="viewcode-back" href="../../oddp.objects.html#oddp.objects.MilnorCochain.evaluate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Evaluates the Milnor cochain **self** on the Milnor chain **other**.</span>
+
+<span class="sd">        **self.dual** must be True and **other.dual** must be False.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        other: MilnorCochain(dual=False)</span>
+<span class="sd">            The Milnor chain that is being evaluated.</span>
+<span class="sd">        left: bool</span>
+<span class="sd">            To choose whether the Milnor chain is evaluated on the left or on</span>
+<span class="sd">            the right.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        MilnorCochain</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">order</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">dual</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">dual</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">degree</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">degree</span><span class="p">,</span>
+                              <span class="n">n</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">tensor1</span><span class="p">,</span> <span class="n">a1</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">tensor2</span><span class="p">,</span> <span class="n">a2</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">left</span> <span class="ow">and</span> <span class="n">tensor1</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">tensor2</span><span class="p">)]</span> <span class="o">==</span> <span class="n">tensor2</span><span class="p">:</span>
+                        <span class="n">sol</span> <span class="o">+=</span> <span class="n">sol</span><span class="o">.</span><span class="n">create</span><span class="p">({</span><span class="n">tensor1</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">tensor2</span><span class="p">):]:</span> <span class="n">a1</span> <span class="o">*</span> <span class="n">a2</span><span class="p">})</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">left</span> <span class="ow">and</span> <span class="n">tensor1</span><span class="p">[</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">tensor2</span><span class="p">):]</span> <span class="o">==</span> <span class="n">tensor2</span><span class="p">:</span>
+                        <span class="n">sol</span> <span class="o">+=</span> <span class="n">sol</span><span class="o">.</span><span class="n">create</span><span class="p">({</span><span class="n">tensor1</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">tensor2</span><span class="p">)]:</span> <span class="n">a1</span> <span class="o">*</span> <span class="n">a2</span><span class="p">})</span>
+            <span class="k">return</span> <span class="n">sol</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_examples</span><span class="p">(</span><span class="n">order_tuple</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">order_tuple</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">dual</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">r</span><span class="p">):</span>
+                    <span class="n">element</span> <span class="o">=</span> <span class="p">((),)</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="k">yield</span> <span class="n">MilnorCochain</span><span class="p">({</span><span class="n">element</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">dual</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">r</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+                        <span class="n">a</span> <span class="o">=</span> <span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">r</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                        <span class="n">element</span> <span class="o">=</span> <span class="p">((),)</span> <span class="o">*</span> <span class="n">j</span> <span class="o">+</span> <span class="p">((</span><span class="n">a</span><span class="p">,),)</span> <span class="o">+</span> <span class="p">((),)</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="n">j</span><span class="p">)</span>
+                        <span class="k">yield</span> <span class="n">MilnorCochain</span><span class="p">({</span><span class="n">element</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="n">dual</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span>
+                                            <span class="n">dual</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+                    <span class="c1"># r = choice(rs)</span>
+                    <span class="n">q</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="n">n</span> <span class="o">=</span> <span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">r</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="n">element</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>  <span class="c1"># number of joined simplices</span>
+                        <span class="n">factor</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+                            <span class="nb">sorted</span><span class="p">(</span><span class="n">sample</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">r</span><span class="p">),</span> <span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">r</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))))</span>
+                        <span class="n">element</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">factor</span><span class="p">)</span>
+                        <span class="n">q</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">factor</span><span class="p">)</span>
+                    <span class="k">yield</span> <span class="n">MilnorCochain</span><span class="p">({</span><span class="nb">tuple</span><span class="p">(</span><span class="n">element</span><span class="p">):</span> <span class="mi">1</span><span class="p">},</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="n">dual</span> <span class="o">*</span> <span class="n">q</span><span class="p">,</span>
+                                        <span class="n">r</span><span class="p">,</span>
+                                        <span class="n">n</span><span class="p">,</span> <span class="n">dual</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="TensorCochain">
+<a class="viewcode-back" href="../../oddp.objects.html#oddp.objects.TensorCochain">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TensorCochain</span><span class="p">(</span><span class="n">ParametricCounter</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A cochain (or a chain) in :math:`\mathrm{N}(\Delta_+^{n})^{\otimes r}`.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    degree: int</span>
+<span class="sd">        The degree of the cochain (nonpositive if ``dual=True``, nonnegative</span>
+<span class="sd">        if ``dual=False``).</span>
+<span class="sd">    order: int</span>
+<span class="sd">        The number of tensor factors.</span>
+<span class="sd">    n: int</span>
+<span class="sd">        The dimension of the simplex.</span>
+<span class="sd">    dual: bool, default=True</span>
+<span class="sd">        If ``dual=True``, cochains are being implemented, if ``dual=False``,</span>
+<span class="sd">        chains</span>
+<span class="sd">        are being implemented.</span>
+<span class="sd">    torsion: int, default=0.</span>
+<span class="sd">        If the values of the dictionary data are integers, then they are</span>
+<span class="sd">        interpreted as modular integers with modulus=torsion.</span>
+<span class="sd">    sph_aug: bool or None, default=True</span>
+<span class="sd">        See the notes below.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Let :math:`R` be a commutative ring with unit, such as</span>
+<span class="sd">    :math:`\mathbb Z` or :math:`\mathbb Z/r Z`. Let</span>
+<span class="sd">    :math:`\mathrm{N}(\Delta^{n})` be the</span>
+<span class="sd">    normalised chain complex of the standard simplex of dimension `n`.</span>
+
+<span class="sd">    The cyclic group of order `r` acts on the tensor product</span>
+<span class="sd">    :math:`\mathrm{N}(\Delta_+^{n})^{\otimes r}` by cyclically permuting</span>
+<span class="sd">    its factors. This tensor product has a subcomplex `I` generated by</span>
+<span class="sd">    r-tuples of faces that do not have a common vertex and a subcomplex `J`</span>
+<span class="sd">    generated by r-tuples of faces such that there is a vertex of the standard</span>
+<span class="sd">    simplex is not contained in any of the faces.</span>
+
+<span class="sd">    If `sph_aug=True`, then instances of this class are elements of the</span>
+<span class="sd">    subcomplex I or its dual. If `sph_aug=False`, then instances of this</span>
+<span class="sd">    class are elements of the quotient</span>
+<span class="sd">    :math:`\mathrm{N}(\Delta_+^{n})^{\otimes r} / J`</span>
+<span class="sd">    or its dual. Finally, if `sph_aug=None`, then they are elements of the</span>
+<span class="sd">    whole complex</span>
+<span class="sd">    :math:`\mathrm{N}(\Delta_+^{n})^{\otimes r}`</span>
+
+<span class="sd">    The implemented map ``chain_maps.abc`` induces an isomorphism between</span>
+<span class="sd">    the Milnor</span>
+<span class="sd">    resolution of size `n` (implemented as MilnorCochain) and the</span>
+<span class="sd">    subcomplex I. The Alexander (or Poincaré) duality map implemented</span>
+<span class="sd">    as the method ``alex()`` of this class, induces an isomorphism between the</span>
+<span class="sd">    subcomplex I and the dual of the quotient</span>
+<span class="sd">    :math:`\mathrm{N}(\Delta_+^{n})^{\otimes r} / J`.</span>
+
+<span class="sd">    .. Warning::</span>
+<span class="sd">        The faces of the simplex (for example, (1,3) or (0,4)) are</span>
+<span class="sd">        always assumed to be ordered.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dual</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">torsion</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                 <span class="n">sph_aug</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;degree&#39;</span><span class="p">:</span> <span class="n">degree</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span> <span class="n">order</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">:</span> <span class="n">n</span><span class="p">,</span> <span class="s1">&#39;dual&#39;</span><span class="p">:</span> <span class="n">dual</span><span class="p">,</span>
+                  <span class="s1">&#39;torsion&#39;</span><span class="p">:</span> <span class="n">torsion</span><span class="p">,</span> <span class="s1">&#39;sph_aug&#39;</span><span class="p">:</span> <span class="n">sph_aug</span><span class="p">}</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">=</span> <span class="n">degree</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="n">order</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dual</span> <span class="o">=</span> <span class="n">dual</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">torsion</span> <span class="o">=</span> <span class="n">torsion</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sph_aug</span> <span class="o">=</span> <span class="n">sph_aug</span>
+
+<div class="viewcode-block" id="TensorCochain.action">
+<a class="viewcode-back" href="../../oddp.objects.html#oddp.objects.TensorCochain.action">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The action of a generator of the cyclic group on self.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        i: int</span>
+<span class="sd">            The generator of the cyclic group that is acting</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        TensorCochain</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; cochain = TensorCochain({((0, 2), (2,), (1,)): 1}, degree=-4, order=3, n=2, dual=True, torsion=0)</span>
+<span class="sd">        &gt;&gt;&gt; cochain.action()</span>
+<span class="sd">        TensorCochain({((2,), (1,), (0, 2)): 1}, degree=-4, order=3, n=2, dual=True, torsion=0, sph_aug=True)</span>
+<span class="sd">        &gt;&gt;&gt; chain = TensorCochain({((0, 2), (2,), (1,)): 1}, degree=4, order=3, n=2, dual=False, torsion=0)</span>
+<span class="sd">        &gt;&gt;&gt; chain.action()</span>
+<span class="sd">        TensorCochain({((1,), (0, 2), (2,)): -1}, degree=4, order=3, n=2, dual=False, torsion=0, sph_aug=True)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+        <span class="n">new_i</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">dual</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">tensor</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">new_tensor</span> <span class="o">=</span> <span class="n">deque</span><span class="p">(</span><span class="n">tensor</span><span class="p">)</span>
+            <span class="n">new_tensor</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">new_i</span><span class="p">)</span>
+            <span class="n">new_tensor</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">new_tensor</span><span class="p">)</span>
+
+            <span class="n">par</span> <span class="o">=</span> <span class="p">(</span><span class="nb">sum</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">factor</span><span class="p">)</span> <span class="k">for</span> <span class="n">factor</span> <span class="ow">in</span> <span class="n">tensor</span><span class="p">[</span><span class="o">-</span><span class="n">new_i</span><span class="p">:]))</span> <span class="o">*</span>
+                   <span class="nb">sum</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">factor</span><span class="p">)</span> <span class="k">for</span> <span class="n">factor</span> <span class="ow">in</span> <span class="n">tensor</span><span class="p">[:</span><span class="o">-</span><span class="n">new_i</span><span class="p">])))</span>
+            <span class="n">sol</span> <span class="o">+=</span> <span class="n">sol</span><span class="o">.</span><span class="n">create</span><span class="p">({</span><span class="n">new_tensor</span><span class="p">:</span> <span class="n">a</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="n">par</span><span class="p">})</span>
+        <span class="k">return</span> <span class="n">sol</span></div>
+
+
+<div class="viewcode-block" id="TensorCochain.partial">
+<a class="viewcode-back" href="../../oddp.objects.html#oddp.objects.TensorCochain.partial">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">partial</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The differential of self.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        TensorCochain</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; cochain = TensorCochain({((0, 2), (2,), (1,)): 1}, degree=-4, \</span>
+<span class="sd">        order=3, n=2, dual=True, torsion=0, sph_aug=True)</span>
+<span class="sd">        &gt;&gt;&gt; cochain.partial()</span>
+<span class="sd">        TensorCochain({((0, 1, 2), (2,), (1,)): 1, ((0, 2), (2,), (0, 1)): 1, ((0, 2), (0, 2), (1,)): -1, ((0, 2), (1, 2), (1,)): -1}, degree=-5, order=3, n=2, dual=True, torsion=0, sph_aug=True)</span>
+<span class="sd">        &gt;&gt;&gt; chain = TensorCochain({((0, 2), (2,), (1,)): 1}, degree=4, order=3, n=2, dual=False, torsion=0, sph_aug=False)</span>
+<span class="sd">        &gt;&gt;&gt; chain.partial()</span>
+<span class="sd">        TensorCochain({((0, 2), (), (1,)): 1, ((0,), (2,), (1,)): -1}, degree=3, order=3, n=2, dual=False, torsion=0, sph_aug=False)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">degree</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">dual_sign</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dual</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">tensor</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">factor</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tensor</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">new_factor</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">Simp</span><span class="p">(</span><span class="n">factor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dual</span><span class="p">,</span>
+                                          <span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">partial</span><span class="p">():</span>
+                    <span class="n">new_tensor</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">tensor</span><span class="p">)</span>
+                    <span class="n">new_tensor</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_factor</span>
+                    <span class="n">cond</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sph_aug</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">dual</span><span class="p">:</span>
+                        <span class="n">extra</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">new_factor</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">factor</span><span class="p">))</span>
+                        <span class="n">cond</span> <span class="o">=</span> <span class="nb">any</span><span class="p">((</span><span class="n">extra</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">new_tensor</span><span class="p">))</span>
+                    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">sph_aug</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">dual</span><span class="p">:</span>
+                        <span class="n">extra</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">factor</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">new_factor</span><span class="p">))</span>
+                        <span class="n">cond</span> <span class="o">=</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">((</span><span class="n">extra</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">new_tensor</span><span class="p">))</span>
+                    <span class="k">if</span> <span class="n">cond</span><span class="p">:</span>
+                        <span class="n">new_tensor</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">new_tensor</span><span class="p">)</span>
+                        <span class="n">new_a</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span> <span class="o">*</span> <span class="n">c</span> <span class="o">*</span> <span class="n">dual_sign</span>
+                        <span class="n">sol</span> <span class="o">+=</span> <span class="n">sol</span><span class="o">.</span><span class="n">create</span><span class="p">({</span><span class="n">new_tensor</span><span class="p">:</span> <span class="n">new_a</span><span class="p">})</span>
+
+                <span class="n">b</span> <span class="o">=</span> <span class="n">b</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="nb">len</span><span class="p">(</span><span class="n">factor</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">sol</span></div>
+
+
+<div class="viewcode-block" id="TensorCochain.alex">
+<a class="viewcode-back" href="../../oddp.objects.html#oddp.objects.TensorCochain.alex">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">alex</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The Alexander (or Poincaré) dual of self.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        TensorCochain</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; cochain = TensorCochain({((0, 2), (2,), (1,)): 1}, degree=-4, order=3, n=2, dual=True, torsion=0, sph_aug=True)</span>
+<span class="sd">        &gt;&gt;&gt; cochain.alex()</span>
+<span class="sd">        TensorCochain({((0, 2), (0, 1), (1,)): -1}, degree=5, order=3, n=2, dual=False, torsion=0, sph_aug=False)</span>
+<span class="sd">        &gt;&gt;&gt; chain = TensorCochain({((0, 2), (2,), (1,)): 1}, degree=4, order=3, n=2, dual=False, torsion=0, sph_aug=True)</span>
+<span class="sd">        &gt;&gt;&gt; chain.alex()</span>
+<span class="sd">        TensorCochain({((0, 2), (0, 1), (1,)): -1}, degree=-5, order=3, n=2, dual=True, torsion=0, sph_aug=False)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+            <span class="n">degree</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">-</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">dual</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="n">dual</span><span class="o">=</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">dual</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sph_aug</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">sol</span><span class="o">.</span><span class="n">sph_aug</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">sph_aug</span>
+
+        <span class="k">for</span> <span class="n">tensor</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">new_tensor</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">new_sign</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dual</span><span class="p">:</span>
+                <span class="n">par</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">for</span> <span class="n">factor</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">tensor</span><span class="p">):</span>
+                    <span class="n">new_factor</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">Simp</span><span class="p">(</span><span class="n">factor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dual</span><span class="p">)</span><span class="o">.</span><span class="n">alex</span><span class="p">()</span>
+                    <span class="n">new_tensor</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_factor</span><span class="p">)</span>
+                    <span class="n">new_sign</span> <span class="o">=</span> <span class="n">new_sign</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="n">par</span> <span class="o">*</span> <span class="n">b</span>
+                    <span class="n">par</span> <span class="o">+=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">factor</span><span class="p">)</span>
+                <span class="n">new_tensor</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">new_tensor</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">par</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">for</span> <span class="n">factor</span> <span class="ow">in</span> <span class="n">tensor</span><span class="p">:</span>
+                    <span class="n">new_factor</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">Simp</span><span class="p">(</span><span class="n">factor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dual</span><span class="p">)</span><span class="o">.</span><span class="n">alex</span><span class="p">()</span>
+                    <span class="n">new_tensor</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_factor</span><span class="p">)</span>
+                    <span class="n">new_sign</span> <span class="o">=</span> <span class="n">new_sign</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="n">par</span> <span class="o">*</span> <span class="n">b</span>
+                    <span class="n">par</span> <span class="o">+=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">factor</span><span class="p">)</span>
+                <span class="n">new_tensor</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">new_tensor</span><span class="p">))</span>
+            <span class="n">sol</span> <span class="o">+=</span> <span class="n">sol</span><span class="o">.</span><span class="n">create</span><span class="p">({</span><span class="n">new_tensor</span><span class="p">:</span> <span class="n">a</span> <span class="o">*</span> <span class="n">new_sign</span><span class="p">})</span>
+        <span class="k">return</span> <span class="n">sol</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">ParametricCounter</span><span class="o">.</span><span class="n">_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">tensor</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tensor</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;The length of this TensorCochain should be &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">sum</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">factor</span><span class="p">)</span> <span class="k">for</span> <span class="n">factor</span> <span class="ow">in</span> <span class="n">tensor</span><span class="p">))</span> <span class="o">!=</span> <span class="p">(</span>
+            <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">dual</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">degree</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;The degree of this TensorCochain should be &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">degree</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="c1"># checking that all the factors are faces of the n-simplex</span>
+            <span class="c1"># checking that there is no common index in all factors (self.dual)</span>
+            <span class="c1"># or that there is no index missing in all factors (not self.dual)</span>
+            <span class="n">sigma</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">factor</span> <span class="ow">in</span> <span class="n">tensor</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">(</span><span class="n">factor</span><span class="p">)</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s1">&#39;The factors of a TensorCochain should be faces of &#39;</span>
+                        <span class="sa">f</span><span class="s1">&#39;the </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="si">}</span><span class="s1">.simplex: </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">factor</span><span class="p">))</span> <span class="o">!=</span> <span class="n">factor</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;All faces must be sorted: </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sph_aug</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="n">sigma</span> <span class="o">=</span> <span class="n">sigma</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">factor</span><span class="p">))</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">sph_aug</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                    <span class="n">sigma</span> <span class="o">=</span> <span class="n">sigma</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">factor</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sigma</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">sph_aug</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;There is a common index to all the factors of this &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;TensorCochain: </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sigma</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">sph_aug</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;There is a missing index in all the factors of this &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;TensorCochain: </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_examples</span><span class="p">(</span><span class="n">order_tuple</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">order_tuple</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">dual</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">]:</span>
+                    <span class="k">for</span> <span class="n">sph_aug</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+                        <span class="n">element</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="n">q</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="n">n</span> <span class="o">=</span> <span class="n">randint</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+                        <span class="n">sigma</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+                        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>  <span class="c1"># number of joined simplices</span>
+                            <span class="n">factor</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+                                <span class="nb">sorted</span><span class="p">(</span><span class="n">sample</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))))</span>
+                            <span class="n">element</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">factor</span><span class="p">)</span>
+                            <span class="n">q</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">factor</span><span class="p">)</span>
+                            <span class="n">sigma</span> <span class="o">=</span> <span class="n">sigma</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">factor</span><span class="p">))</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="k">yield</span> <span class="n">TensorCochain</span><span class="p">({</span><span class="nb">tuple</span><span class="p">(</span><span class="n">element</span><span class="p">):</span> <span class="mi">1</span><span class="p">},</span>
+                                                <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="n">dual</span> <span class="o">*</span> <span class="n">q</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">dual</span><span class="p">,</span>
+                                                <span class="n">sph_aug</span><span class="o">=</span><span class="n">sph_aug</span><span class="p">)</span>
+                        <span class="k">except</span><span class="p">:</span>
+                            <span class="k">pass</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, fcmoran.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

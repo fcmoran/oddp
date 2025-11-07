@@ -1,0 +1,233 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>oddp.tate_product &mdash; oddp_project 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="oddp.chain_maps" href="oddp.chain_maps.html" />
+    <link rel="prev" title="oddp.objects" href="oddp.objects.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            oddp_project
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="oddp.objects.html">oddp.objects</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">oddp.tate_product</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#oddp.tate_product.straightening_builder"><code class="docutils literal notranslate"><span class="pre">straightening_builder()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#oddp.tate_product.codegeneracy"><code class="docutils literal notranslate"><span class="pre">codegeneracy()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#oddp.tate_product.tate_product_dual"><code class="docutils literal notranslate"><span class="pre">tate_product_dual()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#oddp.tate_product.tate_product"><code class="docutils literal notranslate"><span class="pre">tate_product()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="oddp.chain_maps.html">oddp.chain_maps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="oddp.powers.html">oddp.powers</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">oddp_project</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">oddp.tate_product</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/oddp.tate_product.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-oddp.tate_product">
+<span id="oddp-tate-product"></span><h1>oddp.tate_product<a class="headerlink" href="#module-oddp.tate_product" title="Link to this heading"></a></h1>
+<p>One of the ingredients to build the chain map <code class="docutils literal notranslate"><span class="pre">chain_maps.psi</span></code> is a product
+on the chains of the shifted augmented periodic resolution of the cyclic group.
+These chains can be identified with the negative part of the Tate resolution
+of the cyclic group associated to the periodic resolution. Thus, we have an
+explicit description of a chain refinement of the cup product on the negative
+Tate cohomology of the cyclic group.</p>
+<p>In order to define this product, an <cite>r</cite>-cyclic straightening with duality must
+be chosen. The function <code class="docutils literal notranslate"><span class="pre">tate_product.straightening_builder(r)</span></code> builds one
+of these straightenings. The functions <code class="docutils literal notranslate"><span class="pre">tate_product.tate_product</span></code> and
+<code class="docutils literal notranslate"><span class="pre">tate_product.tate_product_dual</span></code> implement the product on the chains
+of the shifted augmented periodic resolution of the cyclic group and its dual.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="oddp.tate_product.straightening_builder">
+<span class="sig-prename descclassname"><span class="pre">oddp.tate_product.</span></span><span class="sig-name descname"><span class="pre">straightening_builder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oddp/tate_product.html#straightening_builder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#oddp.tate_product.straightening_builder" title="Link to this definition"></a></dt>
+<dd><p>Builds a cyclic straightening with duality of order r</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>r</strong> (<em>int</em>) – the order of the straightening, must be a prime number.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>dict</em> – the collection of faces of the (r-1)-simplex whose straightening is
+the vertex 0 (useful for visualization purposes)</p></li>
+<li><p><em>dict</em> – a dictionary whose keys are the faces of the (r-1)-simplex and whose
+values are the values of the straightening at those faces.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">short_straightening</span><span class="p">,</span> <span class="n">straightening</span> <span class="o">=</span> <span class="n">straightening_builder</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">short_straightening</span>
+<span class="go">{(0,): 0, (0, 1): 0}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">straightening</span>
+<span class="go">{(0,): 0, (1,): 1, (2,): 2, (0, 1): 0, (0, 2): 2, (1, 2): 1}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="oddp.tate_product.codegeneracy">
+<span class="sig-prename descclassname"><span class="pre">oddp.tate_product.</span></span><span class="sig-name descname"><span class="pre">codegeneracy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">straightening</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dual</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oddp/tate_product.html#codegeneracy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#oddp.tate_product.codegeneracy" title="Link to this definition"></a></dt>
+<dd><p>The value of the (dual) of the weak codegeneracy on generators.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>straightening</strong> (<em>dict</em>) – A cyclic straightening with duality of order r.</p></li>
+<li><p><strong>r</strong> (<em>int</em>) – The order of the cyclic group, must be a prime number.</p></li>
+<li><p><strong>dual</strong> (<em>bool</em><em>, </em><em>default=True</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary whose keys are the faces of the (r-1)-simplex and whose
+values are their images under the dual of the weak codegeneracy.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict[tuple, <a class="reference internal" href="oddp.objects.html#oddp.objects.ParametricCounter" title="oddp.objects.ParametricCounter">ParametricCounter</a>]</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">short_straightening</span><span class="p">,</span> <span class="n">straightening</span> <span class="o">=</span> <span class="n">straightening_builder</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">codegeneracy</span><span class="p">(</span><span class="n">straightening</span><span class="p">,</span> <span class="mi">3</span><span class="p">)[(</span><span class="mi">0</span><span class="p">,)]</span>
+<span class="go">ParametricCounter({((0,), (1, 2)): 1, ((0, 1), (2,)): 1})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">codegeneracy</span><span class="p">(</span><span class="n">straightening</span><span class="p">,</span> <span class="mi">3</span><span class="p">)[(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">)]</span>
+<span class="go">ParametricCounter({((0, 2), (1, 2)): 1})</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="oddp.tate_product.tate_product_dual">
+<span class="sig-prename descclassname"><span class="pre">oddp.tate_product.</span></span><span class="sig-name descname"><span class="pre">tate_product_dual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">per_cochain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">codegeneracy_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oddp/tate_product.html#tate_product_dual"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#oddp.tate_product.tate_product_dual" title="Link to this definition"></a></dt>
+<dd><p>The dual of the weak codegeneracy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>per_cochain</strong> (<a class="reference internal" href="oddp.objects.html#oddp.objects.PerCochain" title="oddp.objects.PerCochain"><em>PerCochain</em></a>) – A cochain of degree q in the Periodic resolution of the cyclic group
+with  2 &lt;= q &lt;= 2(r-1). The order of the cyclic group
+<code class="docutils literal notranslate"><span class="pre">per_cochain.order</span></code> must be a prime number.</p></li>
+<li><p><strong>codegeneracy_dict</strong> (<em>dict</em><em>[</em><em>tuple</em><em>, </em><a class="reference internal" href="oddp.objects.html#oddp.objects.ParametricCounter" title="oddp.objects.ParametricCounter"><em>ParametricCounter</em></a><em>]</em>) – A dictionary encoding the values of this map on generators (obtained
+via the function codegeneracy).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="oddp.objects.html#oddp.objects.MilnorCochain" title="oddp.objects.MilnorCochain">MilnorCochain</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="oddp.tate_product.tate_product">
+<span class="sig-prename descclassname"><span class="pre">oddp.tate_product.</span></span><span class="sig-name descname"><span class="pre">tate_product</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">per_chain_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">per_chain_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">codegeneracy_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oddp/tate_product.html#tate_product"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#oddp.tate_product.tate_product" title="Link to this definition"></a></dt>
+<dd><p>The weak codegeneracy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>per_chain_1</strong> (<a class="reference internal" href="oddp.objects.html#oddp.objects.PerCochain" title="oddp.objects.PerCochain"><em>PerCochain</em></a><em>(</em><em>dual=False</em><em>)</em>) – A chain in the shifted augmented periodic resolution of the cyclic
+group. The order of the cyclic group <code class="docutils literal notranslate"><span class="pre">per_chain_1.order</span></code> must be a
+prime number.</p></li>
+<li><p><strong>per_chain_2</strong> (<a class="reference internal" href="oddp.objects.html#oddp.objects.PerCochain" title="oddp.objects.PerCochain"><em>PerCochain</em></a><em>(</em><em>dual=False</em><em>)</em>) – A chain in the shifted augmented periodic resolution of the cyclic
+group. The order of the cyclic group <code class="docutils literal notranslate"><span class="pre">per_chain_2.order</span></code> must be a
+prime number.</p></li>
+<li><p><strong>codegeneracy_dict</strong> (<em>dict</em><em>[</em><em>tuple</em><em>, </em><a class="reference internal" href="oddp.objects.html#oddp.objects.ParametricCounter" title="oddp.objects.ParametricCounter"><em>ParametricCounter</em></a><em>]</em>) – A dictionary encoding the values of this map on generators (obtained
+via the function codegeneracy(dual=False)).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="oddp.objects.html#oddp.objects.PerCochain" title="oddp.objects.PerCochain">PerCochain</a>(dual=False)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="oddp.objects.html" class="btn btn-neutral float-left" title="oddp.objects" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="oddp.chain_maps.html" class="btn btn-neutral float-right" title="oddp.chain_maps" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, fcmoran.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

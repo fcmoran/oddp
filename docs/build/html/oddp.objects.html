@@ -1,0 +1,889 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>oddp.objects &mdash; oddp_project 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="oddp.tate_product" href="oddp.tate_product.html" />
+    <link rel="prev" title="Oddp documentation" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            oddp_project
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">oddp.objects</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#oddp.objects.ParametricCounter"><code class="docutils literal notranslate"><span class="pre">ParametricCounter</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#oddp.objects.MinimalCochain"><code class="docutils literal notranslate"><span class="pre">MinimalCochain</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#oddp.objects.MinimalCochain.degree"><code class="docutils literal notranslate"><span class="pre">MinimalCochain.degree</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#oddp.objects.MinimalCochain.order"><code class="docutils literal notranslate"><span class="pre">MinimalCochain.order</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#oddp.objects.MinimalCochain.dual"><code class="docutils literal notranslate"><span class="pre">MinimalCochain.dual</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#oddp.objects.MinimalCochain.torsion"><code class="docutils literal notranslate"><span class="pre">MinimalCochain.torsion</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#oddp.objects.MinimalCochain.action"><code class="docutils literal notranslate"><span class="pre">MinimalCochain.action()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#oddp.objects.MinimalCochain.partial"><code class="docutils literal notranslate"><span class="pre">MinimalCochain.partial()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#oddp.objects.PerCochain"><code class="docutils literal notranslate"><span class="pre">PerCochain</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#oddp.objects.PerCochain.degree"><code class="docutils literal notranslate"><span class="pre">PerCochain.degree</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#oddp.objects.PerCochain.order"><code class="docutils literal notranslate"><span class="pre">PerCochain.order</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#oddp.objects.PerCochain.dual"><code class="docutils literal notranslate"><span class="pre">PerCochain.dual</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#oddp.objects.PerCochain.torsion"><code class="docutils literal notranslate"><span class="pre">PerCochain.torsion</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#oddp.objects.PerCochain.action"><code class="docutils literal notranslate"><span class="pre">PerCochain.action()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#oddp.objects.PerCochain.partial"><code class="docutils literal notranslate"><span class="pre">PerCochain.partial()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#oddp.objects.PerCochain.p_sigma"><code class="docutils literal notranslate"><span class="pre">PerCochain.p_sigma()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#oddp.objects.MilnorCochain"><code class="docutils literal notranslate"><span class="pre">MilnorCochain</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#oddp.objects.MilnorCochain.degree"><code class="docutils literal notranslate"><span class="pre">MilnorCochain.degree</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#oddp.objects.MilnorCochain.order"><code class="docutils literal notranslate"><span class="pre">MilnorCochain.order</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#oddp.objects.MilnorCochain.n"><code class="docutils literal notranslate"><span class="pre">MilnorCochain.n</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#oddp.objects.MilnorCochain.dual"><code class="docutils literal notranslate"><span class="pre">MilnorCochain.dual</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#oddp.objects.MilnorCochain.torsion"><code class="docutils literal notranslate"><span class="pre">MilnorCochain.torsion</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#oddp.objects.MilnorCochain.default_rule"><code class="docutils literal notranslate"><span class="pre">MilnorCochain.default_rule()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#oddp.objects.MilnorCochain.inner_action"><code class="docutils literal notranslate"><span class="pre">MilnorCochain.inner_action()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#oddp.objects.MilnorCochain.action"><code class="docutils literal notranslate"><span class="pre">MilnorCochain.action()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#oddp.objects.MilnorCochain.partial"><code class="docutils literal notranslate"><span class="pre">MilnorCochain.partial()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#oddp.objects.MilnorCochain.p_sigma"><code class="docutils literal notranslate"><span class="pre">MilnorCochain.p_sigma()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#oddp.objects.MilnorCochain.evaluate"><code class="docutils literal notranslate"><span class="pre">MilnorCochain.evaluate()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#oddp.objects.TensorCochain"><code class="docutils literal notranslate"><span class="pre">TensorCochain</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#oddp.objects.TensorCochain.degree"><code class="docutils literal notranslate"><span class="pre">TensorCochain.degree</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#oddp.objects.TensorCochain.order"><code class="docutils literal notranslate"><span class="pre">TensorCochain.order</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#oddp.objects.TensorCochain.n"><code class="docutils literal notranslate"><span class="pre">TensorCochain.n</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#oddp.objects.TensorCochain.dual"><code class="docutils literal notranslate"><span class="pre">TensorCochain.dual</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#oddp.objects.TensorCochain.torsion"><code class="docutils literal notranslate"><span class="pre">TensorCochain.torsion</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#oddp.objects.TensorCochain.sph_aug"><code class="docutils literal notranslate"><span class="pre">TensorCochain.sph_aug</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#oddp.objects.TensorCochain.action"><code class="docutils literal notranslate"><span class="pre">TensorCochain.action()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#oddp.objects.TensorCochain.partial"><code class="docutils literal notranslate"><span class="pre">TensorCochain.partial()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#oddp.objects.TensorCochain.alex"><code class="docutils literal notranslate"><span class="pre">TensorCochain.alex()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="oddp.tate_product.html">oddp.tate_product</a></li>
+<li class="toctree-l1"><a class="reference internal" href="oddp.chain_maps.html">oddp.chain_maps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="oddp.powers.html">oddp.powers</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">oddp_project</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">oddp.objects</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/oddp.objects.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-oddp.objects">
+<span id="oddp-objects"></span><h1>oddp.objects<a class="headerlink" href="#module-oddp.objects" title="Link to this heading"></a></h1>
+<p>This module implements chains and cochains in three shifted augmented
+resolutions of the cyclic group: The minimal resolution, the periodic
+resolution and the Milnor resolution. The latter is isomorphic to a subcomplex
+(or a quotient) of an iterated tensor product of the chain complex of the
+standard simplex that is also implemented.</p>
+<p>Each of them is implemented as a subclass of a class <strong>ParametricCounter</strong>
+that inherits from the class dictionary: the keys of
+the dictionary are basis elements of these resolutions and the values are their
+coefficients. Each of these subclasses has at least the following attributes:</p>
+<dl class="field-list simple">
+<dt class="field-odd">degree<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the degree of the chain or cochain.</p>
+</dd>
+<dt class="field-even">order<span class="colon">:</span></dt>
+<dd class="field-even"><p>the order of the cyclic group.</p>
+</dd>
+<dt class="field-odd">dual<span class="colon">:</span></dt>
+<dd class="field-odd"><p>whether it is a cochain or a chain. Default, True.</p>
+</dd>
+<dt class="field-even">torsion<span class="colon">:</span></dt>
+<dd class="field-even"><p>if nonzero and the values of the dictionary are integers, then these
+values are treated as modular integers. Default, 0.</p>
+</dd>
+</dl>
+<p>Each of these subclasses has at least the following methods:</p>
+<dl class="field-list simple">
+<dt class="field-odd">action()<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the action of the cyclic group on the chain or cochain.</p>
+</dd>
+<dt class="field-even">partial()<span class="colon">:</span></dt>
+<dd class="field-even"><p>the image of the chain or cochain by the differential.</p>
+</dd>
+</dl>
+<p>together with a static method <code class="docutils literal notranslate"><span class="pre">_examples()</span></code> that provides instances of the
+classes useful for testing purposes.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="oddp.objects.ParametricCounter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">oddp.objects.</span></span><span class="sig-name descname"><span class="pre">ParametricCounter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oddp/objects.html#ParametricCounter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#oddp.objects.ParametricCounter" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Counter</span></code></p>
+<p>A linear combination of multigraded elements.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>Counter</em>)</p></li>
+<li><p><strong>**kwargs</strong> (<em>dict</em>) – The keys are the different gradings, the values are the value of
+these gradings. If the values of the Counter data are integers, then
+an additional argument <strong>torsion</strong> may be included in <strong>**kwargs</strong>
+to make the linear combination over the modular integers of order
+<strong>torsion</strong>.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This class implements a multiset (linear combination) with coefficients
+in an arbitrary ring together with parameters. It consists of a dictionary
+with values in some ring, together with a couple of parameters. Two such
+dictionaries with parameters can be added, subtracted and right-multiplied
+by an element of the ring whenever the parameters are equal. Keys with zero
+value are deleted from the dictionary.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ParametricCounter</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span><span class="mi">2</span><span class="p">},</span> <span class="n">q</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ParametricCounter</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">},</span> <span class="n">q</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">y</span><span class="p">)</span>
+<span class="go">ParametricCounter({&#39;a&#39;: 3, &#39;c&#39;: -2}, q=2, r=3)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="oddp.objects.MinimalCochain">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">oddp.objects.</span></span><span class="sig-name descname"><span class="pre">MinimalCochain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degree</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dual</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">torsion</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oddp/objects.html#MinimalCochain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#oddp.objects.MinimalCochain" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#oddp.objects.ParametricCounter" title="oddp.objects.ParametricCounter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParametricCounter</span></code></a></p>
+<p>A (co)chain of the shifted augmented minimal resolution of the cyclic
+group.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oddp.objects.MinimalCochain.degree">
+<span class="sig-name descname"><span class="pre">degree</span></span><a class="headerlink" href="#oddp.objects.MinimalCochain.degree" title="Link to this definition"></a></dt>
+<dd><p>The degree of the cochain (nonpositive if <code class="docutils literal notranslate"><span class="pre">dual=True</span></code>, nonnegative
+if <code class="docutils literal notranslate"><span class="pre">dual=False</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oddp.objects.MinimalCochain.order">
+<span class="sig-name descname"><span class="pre">order</span></span><a class="headerlink" href="#oddp.objects.MinimalCochain.order" title="Link to this definition"></a></dt>
+<dd><p>The order of the cyclic group.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oddp.objects.MinimalCochain.dual">
+<span class="sig-name descname"><span class="pre">dual</span></span><a class="headerlink" href="#oddp.objects.MinimalCochain.dual" title="Link to this definition"></a></dt>
+<dd><p>If <code class="docutils literal notranslate"><span class="pre">dual=True</span></code>, cochains are being implemented, if <code class="docutils literal notranslate"><span class="pre">dual=False</span></code>,
+chains are being implemented.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool, default=True</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oddp.objects.MinimalCochain.torsion">
+<span class="sig-name descname"><span class="pre">torsion</span></span><a class="headerlink" href="#oddp.objects.MinimalCochain.torsion" title="Link to this definition"></a></dt>
+<dd><p>If the values of the dictionary data are integers, then they are
+interpreted as modular integers with modulus=torsion.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int, default=0.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Notes</p>
+<p>Let <span class="math notranslate nohighlight">\(R\)</span> be a commutative ring with unit, such as
+<span class="math notranslate nohighlight">\(\mathbb Z\)</span> or <span class="math notranslate nohighlight">\(\mathbb Z/r Z\)</span>. The shifted augmented minimal
+resolution of the cyclic group <span class="math notranslate nohighlight">\(\mathbb C_r\)</span> of order <cite>r</cite> is the
+chain complex</p>
+<div class="math notranslate nohighlight">
+\[R \leftarrow R\mathbb C_r\langle e_1\rangle \leftarrow
+R\mathbb C_r\langle e_2\rangle \leftarrow R\mathbb C_r\langle
+e_3\rangle
+\ldots\]</div>
+<p>concentrated in nonnegative degrees. The differential is given by</p>
+<p>where <span class="math notranslate nohighlight">\(\rho\)</span> denotes the standard generator of the cyclic group.
+Instances of this class are elements of this resolution or its dual.
+For example, the cochain <span class="math notranslate nohighlight">\(e_3^\vee + 4\cdot (\rho^2e_3)^\vee\)</span>
+in the shifted augmented minimal resolution of the cyclic group of order 5
+with integer coefficients is created as</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">MinimalCochain</span><span class="p">({</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">},</span> <span class="n">degree</span><span class="o">=-</span><span class="mi">3</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>while the chain <span class="math notranslate nohighlight">\(2\cdot e_3 + \rho^4e_3\)</span> in the shifted augmented
+minimal resolution of the cyclic group of order 5 with mod 5 coefficients
+is created as</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">MinimalCochain</span><span class="p">({</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span><span class="mi">1</span><span class="p">},</span> <span class="n">degree</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">dual</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">torsion</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To create chains or cochains in degree 0 use the key 0:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">MinimalCochain</span><span class="p">({</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">},</span> <span class="n">degree</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Observe in the first example that
+<span class="math notranslate nohighlight">\(\rho(e_k^\vee) = (\rho^{-1}e_k)^\vee\)</span></p>
+<p class="rubric">References</p>
+<p>[1] Cantero-Morán, F., Medina-Mardones, A., Steenrod operations and Tate
+resolutions.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="oddp.objects.MinimalCochain.action">
+<span class="sig-name descname"><span class="pre">action</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oddp/objects.html#MinimalCochain.action"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#oddp.objects.MinimalCochain.action" title="Link to this definition"></a></dt>
+<dd><p>The action of a generator of the cyclic group on self.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>i</strong> (<em>int</em><em>, </em><em>default=1</em>) – The generator that is acting.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#oddp.objects.MinimalCochain" title="oddp.objects.MinimalCochain">MinimalCochain</a></p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The action of the generator <span class="math notranslate nohighlight">\(\rho^i\)</span> of the cyclic group on
+self.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cochain</span> <span class="o">=</span> <span class="n">MinimalCochain</span><span class="p">({</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">},</span> <span class="n">degree</span><span class="o">=-</span><span class="mi">2</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dual</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">torsion</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cochain</span><span class="o">.</span><span class="n">action</span><span class="p">()</span>
+<span class="go">MinimalCochain({2: 1}, degree=-2, order=3, dual=True, torsion=0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">chain</span> <span class="o">=</span> <span class="n">MinimalCochain</span><span class="p">({</span><span class="mi">1</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dual</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">torsion</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">chain</span><span class="o">.</span><span class="n">action</span><span class="p">()</span>
+<span class="go">MinimalCochain({2: 1}, degree=2, order=3, dual=False, torsion=0)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="oddp.objects.MinimalCochain.partial">
+<span class="sig-name descname"><span class="pre">partial</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/oddp/objects.html#MinimalCochain.partial"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#oddp.objects.MinimalCochain.partial" title="Link to this definition"></a></dt>
+<dd><p>The differential of self.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#oddp.objects.MinimalCochain" title="oddp.objects.MinimalCochain">MinimalCochain</a></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cochain</span> <span class="o">=</span> <span class="n">MinimalCochain</span><span class="p">({</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">},</span> <span class="n">degree</span><span class="o">=-</span><span class="mi">2</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dual</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">torsion</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cochain</span><span class="o">.</span><span class="n">partial</span><span class="p">()</span>
+<span class="go">MinimalCochain({0: -1, 1: -1, 2: -1}, degree=-3, order=3, dual=True, torsion=0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">chain</span> <span class="o">=</span> <span class="n">MinimalCochain</span><span class="p">({</span><span class="mi">1</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dual</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">torsion</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">chain</span><span class="o">.</span><span class="n">partial</span><span class="p">()</span>
+<span class="go">MinimalCochain({2: 1, 1: -1}, degree=1, order=3, dual=False, torsion=0)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="oddp.objects.PerCochain">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">oddp.objects.</span></span><span class="sig-name descname"><span class="pre">PerCochain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degree</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dual</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">torsion</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oddp/objects.html#PerCochain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#oddp.objects.PerCochain" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#oddp.objects.ParametricCounter" title="oddp.objects.ParametricCounter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParametricCounter</span></code></a></p>
+<p>A (co)chain of the shifted augmented periodic resolution of the cyclic
+group.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oddp.objects.PerCochain.degree">
+<span class="sig-name descname"><span class="pre">degree</span></span><a class="headerlink" href="#oddp.objects.PerCochain.degree" title="Link to this definition"></a></dt>
+<dd><p>The degree of the cochain (nonpositive if <code class="docutils literal notranslate"><span class="pre">dual=True</span></code>, nonnegative
+if <code class="docutils literal notranslate"><span class="pre">dual=False</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oddp.objects.PerCochain.order">
+<span class="sig-name descname"><span class="pre">order</span></span><a class="headerlink" href="#oddp.objects.PerCochain.order" title="Link to this definition"></a></dt>
+<dd><p>The order of the cyclic group.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oddp.objects.PerCochain.dual">
+<span class="sig-name descname"><span class="pre">dual</span></span><a class="headerlink" href="#oddp.objects.PerCochain.dual" title="Link to this definition"></a></dt>
+<dd><p>If <code class="docutils literal notranslate"><span class="pre">dual=True</span></code>, cochains are being implemented, if <code class="docutils literal notranslate"><span class="pre">dual=False</span></code>,
+chains
+are being implemented.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool, default=True</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oddp.objects.PerCochain.torsion">
+<span class="sig-name descname"><span class="pre">torsion</span></span><a class="headerlink" href="#oddp.objects.PerCochain.torsion" title="Link to this definition"></a></dt>
+<dd><p>If the values of the dictionary data are integers, then they are
+interpreted as modular integers with modulus=torsion. If <code class="docutils literal notranslate"><span class="pre">order</span></code>
+is the even prime, then modular coefficients with <code class="docutils literal notranslate"><span class="pre">torsion=order</span></code>
+must be used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int, default=0.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Notes</p>
+<p>Let <span class="math notranslate nohighlight">\(R\)</span> be a commutative ring with unit, such as
+<span class="math notranslate nohighlight">\(\mathbb Z\)</span> or <span class="math notranslate nohighlight">\(\mathbb Z/r \mathbb Z\)</span>. Let
+<span class="math notranslate nohighlight">\(\mathrm{N}(\partial\Delta^{r-1})\)</span> be the
+normalised chain complex of the boundary of the standard simplex of
+dimension <cite>r-1</cite>. Permuting the vertices
+of the simplex defines an action of the cyclic group <span class="math notranslate nohighlight">\(\mathbb C_r\)</span>
+of order <cite>r</cite> on this chain complex.</p>
+<p>This complex has an augmentation map of degree <cite>0</cite> that sends every vertex
+of the simplex to the unit in the ring <cite>R</cite>. It also has a coaugmentation
+map of degree <cite>r-2</cite> that sends the unit to the boundary of the top face of
+<span class="math notranslate nohighlight">\(\Delta^{r-1}\)</span> with its standard orientation. The composition of
+these two maps defines a differential of degree <cite>r-2</cite> with which
+<span class="math notranslate nohighlight">\(\bigoplus_{j=0}^{\infty} \mathrm{s}^{j(r-1)}\mathrm{N}(
+\partial\Delta^{r-1})\)</span>
+becomes a contractible chain complex with an augmentation to <cite>R</cite>.</p>
+<p>The suspension of this augmented chain complex is the shifted augmented
+Periodic resolution of the cyclic group of order <cite>r</cite>.</p>
+<p>Instances of this class are elements of this resolution. For example,
+the generator <span class="math notranslate nohighlight">\(2\cdot (1,3) + 3\cdot (0,4)\)</span> in degree 6 in the
+shifted augmented periodic resolution of the cyclic group of order 5
+with integer coefficients is created as</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">PerCochain</span><span class="p">({(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">):</span><span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">):</span><span class="mi">3</span><span class="p">},</span> <span class="n">degree</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">dual</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The faces of the simplex (for example, (1,3) or (0,4)) are
+always assumed to be ordered.</p>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="oddp.objects.PerCochain.action">
+<span class="sig-name descname"><span class="pre">action</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oddp/objects.html#PerCochain.action"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#oddp.objects.PerCochain.action" title="Link to this definition"></a></dt>
+<dd><p>The action of a generator of the cyclic group on self.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>i</strong> (<em>int</em><em>, </em><em>default=1</em>) – The generator of the cyclic group that is acting.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#oddp.objects.PerCochain" title="oddp.objects.PerCochain">PerCochain</a></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cochain</span> <span class="o">=</span> <span class="n">PerCochain</span><span class="p">({(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span> <span class="mi">1</span><span class="p">},</span> <span class="n">degree</span><span class="o">=-</span><span class="mi">2</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dual</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">torsion</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cochain</span><span class="o">.</span><span class="n">action</span><span class="p">()</span>
+<span class="go">PerCochain({(1, 2): -1}, degree=-2, order=3, dual=True, torsion=0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">chain</span> <span class="o">=</span> <span class="n">PerCochain</span><span class="p">({(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span> <span class="mi">1</span><span class="p">},</span> <span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dual</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">torsion</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">chain</span><span class="o">.</span><span class="n">action</span><span class="p">()</span>
+<span class="go">PerCochain({(0, 1): -1}, degree=2, order=3, dual=False, torsion=0)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="oddp.objects.PerCochain.partial">
+<span class="sig-name descname"><span class="pre">partial</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/oddp/objects.html#PerCochain.partial"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#oddp.objects.PerCochain.partial" title="Link to this definition"></a></dt>
+<dd><p>The differential of self.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#oddp.objects.PerCochain" title="oddp.objects.PerCochain">PerCochain</a></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cochain</span> <span class="o">=</span> <span class="n">PerCochain</span><span class="p">({(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span> <span class="mi">1</span><span class="p">},</span> <span class="n">degree</span><span class="o">=-</span><span class="mi">2</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dual</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">torsion</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cochain</span><span class="o">.</span><span class="n">partial</span><span class="p">()</span>
+<span class="go">PerCochain({(0,): 1, (1,): 1, (2,): 1}, degree=-3, order=3, dual=True, torsion=0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">chain</span> <span class="o">=</span> <span class="n">PerCochain</span><span class="p">({(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span> <span class="mi">1</span><span class="p">},</span> <span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dual</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">torsion</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">chain</span><span class="o">.</span><span class="n">partial</span><span class="p">()</span>
+<span class="go">PerCochain({(2,): 1, (0,): -1}, degree=1, order=3, dual=False, torsion=0)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="oddp.objects.PerCochain.p_sigma">
+<span class="sig-name descname"><span class="pre">p_sigma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">degree</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oddp/objects.html#PerCochain.p_sigma"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#oddp.objects.PerCochain.p_sigma" title="Link to this definition"></a></dt>
+<dd><p>The (dual of the) differential of the top face of the (r-1)-simplex.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>degree</strong> (<em>int</em>) – A multiple of <strong>self.order</strong> - 1.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#oddp.objects.PerCochain" title="oddp.objects.PerCochain">PerCochain</a></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cochain</span> <span class="o">=</span> <span class="n">PerCochain</span><span class="p">({(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span> <span class="mi">1</span><span class="p">},</span> <span class="n">degree</span><span class="o">=-</span><span class="mi">2</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dual</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">torsion</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cochain</span><span class="o">.</span><span class="n">p_sigma</span><span class="p">(</span><span class="o">-</span><span class="mi">6</span><span class="p">)</span>
+<span class="go">PerCochain({(1, 2): 1, (0, 1): 1, (0, 2): -1}, degree=-6, order=3, dual=True, torsion=0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">chain</span> <span class="o">=</span> <span class="n">PerCochain</span><span class="p">({(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span> <span class="mi">1</span><span class="p">},</span> <span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dual</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">torsion</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">chain</span><span class="o">.</span><span class="n">p_sigma</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="go">PerCochain({(1, 2): 1, (0, 1): 1, (0, 2): -1}, degree=4, order=3, dual=False, torsion=0)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="oddp.objects.MilnorCochain">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">oddp.objects.</span></span><span class="sig-name descname"><span class="pre">MilnorCochain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degree</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dual</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">torsion</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oddp/objects.html#MilnorCochain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#oddp.objects.MilnorCochain" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#oddp.objects.ParametricCounter" title="oddp.objects.ParametricCounter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParametricCounter</span></code></a></p>
+<p>A (co)chain of the shifted augmented Milnor resolution of the cyclic group.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oddp.objects.MilnorCochain.degree">
+<span class="sig-name descname"><span class="pre">degree</span></span><a class="headerlink" href="#oddp.objects.MilnorCochain.degree" title="Link to this definition"></a></dt>
+<dd><p>The degree of the cochain (nonpositive if <code class="docutils literal notranslate"><span class="pre">dual=True</span></code>, nonnegative
+if <code class="docutils literal notranslate"><span class="pre">dual=False</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oddp.objects.MilnorCochain.order">
+<span class="sig-name descname"><span class="pre">order</span></span><a class="headerlink" href="#oddp.objects.MilnorCochain.order" title="Link to this definition"></a></dt>
+<dd><p>The order of the cyclic group.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oddp.objects.MilnorCochain.n">
+<span class="sig-name descname"><span class="pre">n</span></span><a class="headerlink" href="#oddp.objects.MilnorCochain.n" title="Link to this definition"></a></dt>
+<dd><p>n+1 is the number of tensor factors in the resolution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oddp.objects.MilnorCochain.dual">
+<span class="sig-name descname"><span class="pre">dual</span></span><a class="headerlink" href="#oddp.objects.MilnorCochain.dual" title="Link to this definition"></a></dt>
+<dd><p>If <code class="docutils literal notranslate"><span class="pre">dual=True</span></code>, cochains are being implemented, if <code class="docutils literal notranslate"><span class="pre">dual=False</span></code>,
+chains
+are being implemented.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool, default=True</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oddp.objects.MilnorCochain.torsion">
+<span class="sig-name descname"><span class="pre">torsion</span></span><a class="headerlink" href="#oddp.objects.MilnorCochain.torsion" title="Link to this definition"></a></dt>
+<dd><p>If the values of the dictionary data are integers, then they are
+interpreted as modular integers with modulus=torsion.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int, default=0.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Notes</p>
+<p>Let <span class="math notranslate nohighlight">\(R\)</span> be a commutative ring with unit, such as
+<span class="math notranslate nohighlight">\(\mathbb Z\)</span> or <span class="math notranslate nohighlight">\(\mathbb Z/r \mathbb Z\)</span>. Let
+<span class="math notranslate nohighlight">\(\mathrm{N}(\partial\Delta^{r-1})\)</span> be the
+normalised chain complex of the boundary of the standard simplex of
+dimension <cite>r-1</cite>. Permuting the vertices of the simplex defines an action
+of the cyclic group <span class="math notranslate nohighlight">\(\mathbb C_r\)</span> of order <cite>r</cite> on this chain complex.</p>
+<p>The Milnor resolution (of size <cite>n</cite>) of the cyclic group of order <cite>r</cite> is
+the tensor product <span class="math notranslate nohighlight">\(\mathrm{N}(\partial \Delta_+^{r-1})^{\otimes
+n+1}\)</span>,
+with its natural augmentation over the ring <cite>R</cite>, and suspended once.</p>
+<p>Instances of this class are elements of this resolution.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The faces of the simplex (for example, (1,3) or (0,4)) are
+always assumed to be ordered.</p>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="oddp.objects.MilnorCochain.default_rule">
+<span class="sig-name descname"><span class="pre">default_rule</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/oddp/objects.html#MilnorCochain.default_rule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#oddp.objects.MilnorCochain.default_rule" title="Link to this definition"></a></dt>
+<dd><p>A tuple that encodes the default endomorphism of the Milnor resolution.</p>
+<p>This tuple encodes the endomorphism <span class="math notranslate nohighlight">\(\alpha = (\rho^{r}\otimes
+\rho^{r-1}\otimes \ldots \otimes \rho^{r-n})\)</span> of the Milnor resolution.
+The composition <span class="math notranslate nohighlight">\(\alpha\circ\beta\)</span> is implemented in the function
+<code class="docutils literal notranslate"><span class="pre">chain_maps.abc</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="oddp.objects.MilnorCochain.inner_action">
+<span class="sig-name descname"><span class="pre">inner_action</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rule</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oddp/objects.html#MilnorCochain.inner_action"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#oddp.objects.MilnorCochain.inner_action" title="Link to this definition"></a></dt>
+<dd><p>The endomorphism of the Milnor resolution defined by <cite>rule</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>rule</strong> (<em>tuple</em><em>[</em><em>int</em><em>]</em>) – A tuple encoding <strong>self.n</strong> + 1 generators of the cyclic group.
+If None, defaults to <em>default_rule()</em>.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#oddp.objects.MilnorCochain" title="oddp.objects.MilnorCochain">MilnorCochain</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="oddp.objects.MilnorCochain.action">
+<span class="sig-name descname"><span class="pre">action</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oddp/objects.html#MilnorCochain.action"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#oddp.objects.MilnorCochain.action" title="Link to this definition"></a></dt>
+<dd><p>The diagonal action of the cyclic group on self.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>i</strong> (<em>int</em>) – The generator of the cyclic group that is acting on self.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#oddp.objects.MilnorCochain" title="oddp.objects.MilnorCochain">MilnorCochain</a></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cochain</span> <span class="o">=</span> <span class="n">MilnorCochain</span><span class="p">({((</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">),(</span><span class="mi">2</span><span class="p">,)):</span><span class="mi">1</span><span class="p">},</span> <span class="n">degree</span><span class="o">=-</span><span class="mi">3</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dual</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">torsion</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cochain</span><span class="o">.</span><span class="n">action</span><span class="p">()</span>
+<span class="go">MilnorCochain({((1, 2), (1,)): -1}, degree=-3, order=3, n=1, dual=True, torsion=0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">chain</span> <span class="o">=</span> <span class="n">MilnorCochain</span><span class="p">({((</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">),(</span><span class="mi">2</span><span class="p">,)):</span><span class="mi">1</span><span class="p">},</span> <span class="n">degree</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dual</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">torsion</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">chain</span><span class="o">.</span><span class="n">action</span><span class="p">()</span>
+<span class="go">MilnorCochain({((0, 1), (0,)): -1}, degree=3, order=3, n=1, dual=False, torsion=0)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="oddp.objects.MilnorCochain.partial">
+<span class="sig-name descname"><span class="pre">partial</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/oddp/objects.html#MilnorCochain.partial"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#oddp.objects.MilnorCochain.partial" title="Link to this definition"></a></dt>
+<dd><p>The differential of self.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#oddp.objects.MilnorCochain" title="oddp.objects.MilnorCochain">MilnorCochain</a></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cochain</span> <span class="o">=</span> <span class="n">MilnorCochain</span><span class="p">({((</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">),(</span><span class="mi">2</span><span class="p">,)):</span><span class="mi">1</span><span class="p">},</span> <span class="n">degree</span><span class="o">=-</span><span class="mi">3</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dual</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">torsion</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cochain</span><span class="o">.</span><span class="n">partial</span><span class="p">()</span>
+<span class="go">MilnorCochain({((0, 2), (0, 2)): 1, ((0, 2), (1, 2)): 1}, degree=-4, order=3, n=1, dual=True, torsion=0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">chain</span> <span class="o">=</span> <span class="n">MilnorCochain</span><span class="p">({((</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">),(</span><span class="mi">2</span><span class="p">,)):</span><span class="mi">1</span><span class="p">},</span> <span class="n">degree</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dual</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">torsion</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">chain</span><span class="o">.</span><span class="n">partial</span><span class="p">()</span>
+<span class="go">MilnorCochain({((2,), (2,)): 1, ((0, 2), ()): 1, ((0,), (2,)): -1}, degree=2, order=3, n=1, dual=False, torsion=0)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="oddp.objects.MilnorCochain.p_sigma">
+<span class="sig-name descname"><span class="pre">p_sigma</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/oddp/objects.html#MilnorCochain.p_sigma"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#oddp.objects.MilnorCochain.p_sigma" title="Link to this definition"></a></dt>
+<dd><p>The (dual of the) differential of the top face of the (
+<strong>self.order</strong> - 1)-simplex.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#oddp.objects.MilnorCochain" title="oddp.objects.MilnorCochain">MilnorCochain</a></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cochain</span> <span class="o">=</span> <span class="n">MilnorCochain</span><span class="p">({((</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">),(</span><span class="mi">2</span><span class="p">,)):</span><span class="mi">1</span><span class="p">},</span> <span class="n">degree</span><span class="o">=-</span><span class="mi">3</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dual</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">torsion</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cochain</span><span class="o">.</span><span class="n">p_sigma</span><span class="p">()</span>
+<span class="go">MilnorCochain({((1, 2),): 1, ((0, 1),): 1, ((0, 2),): -1}, degree=2, order=3, n=0, dual=False, torsion=0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">chain</span> <span class="o">=</span> <span class="n">MilnorCochain</span><span class="p">({((</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">),(</span><span class="mi">2</span><span class="p">,)):</span><span class="mi">1</span><span class="p">},</span> <span class="n">degree</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dual</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">torsion</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">chain</span><span class="o">.</span><span class="n">p_sigma</span><span class="p">()</span>
+<span class="go">MilnorCochain({((1, 2),): 1, ((0, 1),): 1, ((0, 2),): -1}, degree=2, order=3, n=0, dual=False, torsion=0)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="oddp.objects.MilnorCochain.evaluate">
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">left</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oddp/objects.html#MilnorCochain.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#oddp.objects.MilnorCochain.evaluate" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the Milnor cochain <strong>self</strong> on the Milnor chain <strong>other</strong>.</p>
+<p><strong>self.dual</strong> must be True and <strong>other.dual</strong> must be False.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>other</strong> (<a class="reference internal" href="#oddp.objects.MilnorCochain" title="oddp.objects.MilnorCochain"><em>MilnorCochain</em></a><em>(</em><em>dual=False</em><em>)</em>) – The Milnor chain that is being evaluated.</p></li>
+<li><p><strong>left</strong> (<em>bool</em>) – To choose whether the Milnor chain is evaluated on the left or on
+the right.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#oddp.objects.MilnorCochain" title="oddp.objects.MilnorCochain">MilnorCochain</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="oddp.objects.TensorCochain">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">oddp.objects.</span></span><span class="sig-name descname"><span class="pre">TensorCochain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degree</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dual</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">torsion</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sph_aug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oddp/objects.html#TensorCochain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#oddp.objects.TensorCochain" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#oddp.objects.ParametricCounter" title="oddp.objects.ParametricCounter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParametricCounter</span></code></a></p>
+<p>A cochain (or a chain) in <span class="math notranslate nohighlight">\(\mathrm{N}(\Delta_+^{n})^{\otimes r}\)</span>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oddp.objects.TensorCochain.degree">
+<span class="sig-name descname"><span class="pre">degree</span></span><a class="headerlink" href="#oddp.objects.TensorCochain.degree" title="Link to this definition"></a></dt>
+<dd><p>The degree of the cochain (nonpositive if <code class="docutils literal notranslate"><span class="pre">dual=True</span></code>, nonnegative
+if <code class="docutils literal notranslate"><span class="pre">dual=False</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oddp.objects.TensorCochain.order">
+<span class="sig-name descname"><span class="pre">order</span></span><a class="headerlink" href="#oddp.objects.TensorCochain.order" title="Link to this definition"></a></dt>
+<dd><p>The number of tensor factors.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oddp.objects.TensorCochain.n">
+<span class="sig-name descname"><span class="pre">n</span></span><a class="headerlink" href="#oddp.objects.TensorCochain.n" title="Link to this definition"></a></dt>
+<dd><p>The dimension of the simplex.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oddp.objects.TensorCochain.dual">
+<span class="sig-name descname"><span class="pre">dual</span></span><a class="headerlink" href="#oddp.objects.TensorCochain.dual" title="Link to this definition"></a></dt>
+<dd><p>If <code class="docutils literal notranslate"><span class="pre">dual=True</span></code>, cochains are being implemented, if <code class="docutils literal notranslate"><span class="pre">dual=False</span></code>,
+chains
+are being implemented.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool, default=True</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oddp.objects.TensorCochain.torsion">
+<span class="sig-name descname"><span class="pre">torsion</span></span><a class="headerlink" href="#oddp.objects.TensorCochain.torsion" title="Link to this definition"></a></dt>
+<dd><p>If the values of the dictionary data are integers, then they are
+interpreted as modular integers with modulus=torsion.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int, default=0.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="oddp.objects.TensorCochain.sph_aug">
+<span class="sig-name descname"><span class="pre">sph_aug</span></span><a class="headerlink" href="#oddp.objects.TensorCochain.sph_aug" title="Link to this definition"></a></dt>
+<dd><p>See the notes below.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool or None, default=True</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Notes</p>
+<p>Let <span class="math notranslate nohighlight">\(R\)</span> be a commutative ring with unit, such as
+<span class="math notranslate nohighlight">\(\mathbb Z\)</span> or <span class="math notranslate nohighlight">\(\mathbb Z/r Z\)</span>. Let
+<span class="math notranslate nohighlight">\(\mathrm{N}(\Delta^{n})\)</span> be the
+normalised chain complex of the standard simplex of dimension <cite>n</cite>.</p>
+<p>The cyclic group of order <cite>r</cite> acts on the tensor product
+<span class="math notranslate nohighlight">\(\mathrm{N}(\Delta_+^{n})^{\otimes r}\)</span> by cyclically permuting
+its factors. This tensor product has a subcomplex <cite>I</cite> generated by
+r-tuples of faces that do not have a common vertex and a subcomplex <cite>J</cite>
+generated by r-tuples of faces such that there is a vertex of the standard
+simplex is not contained in any of the faces.</p>
+<p>If <cite>sph_aug=True</cite>, then instances of this class are elements of the
+subcomplex I or its dual. If <cite>sph_aug=False</cite>, then instances of this
+class are elements of the quotient
+<span class="math notranslate nohighlight">\(\mathrm{N}(\Delta_+^{n})^{\otimes r} / J\)</span>
+or its dual. Finally, if <cite>sph_aug=None</cite>, then they are elements of the
+whole complex
+<span class="math notranslate nohighlight">\(\mathrm{N}(\Delta_+^{n})^{\otimes r}\)</span></p>
+<p>The implemented map <code class="docutils literal notranslate"><span class="pre">chain_maps.abc</span></code> induces an isomorphism between
+the Milnor
+resolution of size <cite>n</cite> (implemented as MilnorCochain) and the
+subcomplex I. The Alexander (or Poincaré) duality map implemented
+as the method <code class="docutils literal notranslate"><span class="pre">alex()</span></code> of this class, induces an isomorphism between the
+subcomplex I and the dual of the quotient
+<span class="math notranslate nohighlight">\(\mathrm{N}(\Delta_+^{n})^{\otimes r} / J\)</span>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The faces of the simplex (for example, (1,3) or (0,4)) are
+always assumed to be ordered.</p>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="oddp.objects.TensorCochain.action">
+<span class="sig-name descname"><span class="pre">action</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oddp/objects.html#TensorCochain.action"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#oddp.objects.TensorCochain.action" title="Link to this definition"></a></dt>
+<dd><p>The action of a generator of the cyclic group on self.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>i</strong> (<em>int</em>) – The generator of the cyclic group that is acting</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#oddp.objects.TensorCochain" title="oddp.objects.TensorCochain">TensorCochain</a></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cochain</span> <span class="o">=</span> <span class="n">TensorCochain</span><span class="p">({((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,)):</span> <span class="mi">1</span><span class="p">},</span> <span class="n">degree</span><span class="o">=-</span><span class="mi">4</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">dual</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">torsion</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cochain</span><span class="o">.</span><span class="n">action</span><span class="p">()</span>
+<span class="go">TensorCochain({((2,), (1,), (0, 2)): 1}, degree=-4, order=3, n=2, dual=True, torsion=0, sph_aug=True)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">chain</span> <span class="o">=</span> <span class="n">TensorCochain</span><span class="p">({((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,)):</span> <span class="mi">1</span><span class="p">},</span> <span class="n">degree</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">dual</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">torsion</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">chain</span><span class="o">.</span><span class="n">action</span><span class="p">()</span>
+<span class="go">TensorCochain({((1,), (0, 2), (2,)): -1}, degree=4, order=3, n=2, dual=False, torsion=0, sph_aug=True)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="oddp.objects.TensorCochain.partial">
+<span class="sig-name descname"><span class="pre">partial</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/oddp/objects.html#TensorCochain.partial"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#oddp.objects.TensorCochain.partial" title="Link to this definition"></a></dt>
+<dd><p>The differential of self.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#oddp.objects.TensorCochain" title="oddp.objects.TensorCochain">TensorCochain</a></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cochain</span> <span class="o">=</span> <span class="n">TensorCochain</span><span class="p">({((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,)):</span> <span class="mi">1</span><span class="p">},</span> <span class="n">degree</span><span class="o">=-</span><span class="mi">4</span><span class="p">,</span>         <span class="n">order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">dual</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">torsion</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sph_aug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cochain</span><span class="o">.</span><span class="n">partial</span><span class="p">()</span>
+<span class="go">TensorCochain({((0, 1, 2), (2,), (1,)): 1, ((0, 2), (2,), (0, 1)): 1, ((0, 2), (0, 2), (1,)): -1, ((0, 2), (1, 2), (1,)): -1}, degree=-5, order=3, n=2, dual=True, torsion=0, sph_aug=True)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">chain</span> <span class="o">=</span> <span class="n">TensorCochain</span><span class="p">({((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,)):</span> <span class="mi">1</span><span class="p">},</span> <span class="n">degree</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">dual</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">torsion</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sph_aug</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">chain</span><span class="o">.</span><span class="n">partial</span><span class="p">()</span>
+<span class="go">TensorCochain({((0, 2), (), (1,)): 1, ((0,), (2,), (1,)): -1}, degree=3, order=3, n=2, dual=False, torsion=0, sph_aug=False)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="oddp.objects.TensorCochain.alex">
+<span class="sig-name descname"><span class="pre">alex</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/oddp/objects.html#TensorCochain.alex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#oddp.objects.TensorCochain.alex" title="Link to this definition"></a></dt>
+<dd><p>The Alexander (or Poincaré) dual of self.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#oddp.objects.TensorCochain" title="oddp.objects.TensorCochain">TensorCochain</a></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cochain</span> <span class="o">=</span> <span class="n">TensorCochain</span><span class="p">({((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,)):</span> <span class="mi">1</span><span class="p">},</span> <span class="n">degree</span><span class="o">=-</span><span class="mi">4</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">dual</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">torsion</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sph_aug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cochain</span><span class="o">.</span><span class="n">alex</span><span class="p">()</span>
+<span class="go">TensorCochain({((0, 2), (0, 1), (1,)): -1}, degree=5, order=3, n=2, dual=False, torsion=0, sph_aug=False)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">chain</span> <span class="o">=</span> <span class="n">TensorCochain</span><span class="p">({((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,)):</span> <span class="mi">1</span><span class="p">},</span> <span class="n">degree</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">dual</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">torsion</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sph_aug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">chain</span><span class="o">.</span><span class="n">alex</span><span class="p">()</span>
+<span class="go">TensorCochain({((0, 2), (0, 1), (1,)): -1}, degree=-5, order=3, n=2, dual=True, torsion=0, sph_aug=False)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Oddp documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="oddp.tate_product.html" class="btn btn-neutral float-right" title="oddp.tate_product" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, fcmoran.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,290 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>oddp.powers &mdash; oddp_project 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="oddp.chain_maps" href="oddp.chain_maps.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            oddp_project
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="oddp.objects.html">oddp.objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="oddp.tate_product.html">oddp.tate_product</a></li>
+<li class="toctree-l1"><a class="reference internal" href="oddp.chain_maps.html">oddp.chain_maps</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">oddp.powers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#higher-cup-products">Higher cup products</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#power-operations">Power operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#power-operations-for-simplicial-complexes">Power operations for simplicial complexes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#oddp.powers.power_operation_0"><code class="docutils literal notranslate"><span class="pre">power_operation_0()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#oddp.powers.power_operation_1"><code class="docutils literal notranslate"><span class="pre">power_operation_1()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">oddp_project</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">oddp.powers</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/oddp.powers.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-oddp.powers">
+<span id="oddp-powers"></span><h1>oddp.powers<a class="headerlink" href="#module-oddp.powers" title="Link to this heading"></a></h1>
+<p>This module uses the chain maps <code class="docutils literal notranslate"><span class="pre">phi_dual</span></code>, <code class="docutils literal notranslate"><span class="pre">psi_dual</span></code> and <code class="docutils literal notranslate"><span class="pre">abc_dual</span></code>
+to implement higher cup products and chain level power operations as in [2].</p>
+<section id="higher-cup-products">
+<h2>Higher cup products<a class="headerlink" href="#higher-cup-products" title="Link to this heading"></a></h2>
+<p>The higher cup product of degree <cite>i</cite> for the prime <cite>p</cite> on the simplex of
+dimension <cite>n</cite> is a chain map</p>
+<div class="math notranslate nohighlight">
+\[\smile_{p,i}\colon \mathrm{N}(\Delta^{n}) \to
+\mathrm{N}(\Delta^{n})^{\otimes p}\]</div>
+<p>of degree <cite>i</cite> computed as follows: First, create an instance of the generator
+<span class="math notranslate nohighlight">\(e_{i-(p-1)n}^\vee\)</span> of the dual of the shifted augmented minimal
+resolution:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">minimal_cochain</span> <span class="o">=</span> <span class="n">MinimalCochain</span><span class="p">({</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">},</span> <span class="n">degree</span><span class="o">=</span><span class="n">i</span><span class="o">-</span><span class="p">(</span><span class="n">p</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">n</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">p</span><span class="p">,</span> <span class="n">torsion</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Then, if <code class="docutils literal notranslate"><span class="pre">torsion=p</span></code> or <code class="docutils literal notranslate"><span class="pre">p=3</span></code>, apply the following composition:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">factorial</span>
+<span class="n">factorial</span><span class="p">((</span><span class="n">p</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">abc_dual</span><span class="p">(</span><span class="n">psi_dual</span><span class="p">(</span><span class="n">phi_dual</span><span class="p">(</span><span class="n">minimal_cochain</span><span class="p">),</span><span class="n">n</span><span class="p">))</span><span class="o">.</span><span class="n">alex</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>For example,</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">minimal_cochain</span> <span class="o">=</span> <span class="n">MinimalCochain</span><span class="p">({</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">},</span> <span class="n">degree</span><span class="o">=</span><span class="n">i</span><span class="o">-</span><span class="p">(</span><span class="n">p</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">n</span> <span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">p</span><span class="p">,</span> <span class="n">torsion</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">abc_dual</span><span class="p">(</span><span class="n">psi_dual</span><span class="p">(</span><span class="n">phi_dual</span><span class="p">(</span><span class="n">minimal_cochain</span><span class="p">),</span><span class="n">n</span><span class="p">))</span><span class="o">.</span><span class="n">alex</span><span class="p">()</span>
+<span class="go">TensorCochain({((0, 1), (1,), (1,)): 1, ((0,), (0,), (0, 1)): 1, ((0,), (0, 1), (1,)): -1, ((0, 1), (), (0, 1)): -1}, degree=4, order=3, n=1, dual=False, torsion=0, sph_aug=False)</span>
+</pre></div>
+</div>
+<p>If <code class="docutils literal notranslate"><span class="pre">torsion=0</span></code> and <code class="docutils literal notranslate"><span class="pre">p!=3</span></code>, then the map <code class="docutils literal notranslate"><span class="pre">phi_dual</span></code> is only defined on the
+rational numbers (although after multiplying by the factorial number, the
+coefficients will be actually integers), thus we have to write instead:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">fractions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fraction</span>
+<span class="n">minimal_cochain</span> <span class="o">=</span> <span class="n">MinimalCochain</span><span class="p">({</span><span class="mi">0</span><span class="p">:</span><span class="n">Fraction</span><span class="p">(</span><span class="mi">1</span><span class="p">)},</span> <span class="n">degree</span><span class="o">=</span><span class="n">i</span><span class="o">-</span><span class="n">p</span><span class="o">*</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="n">p</span><span class="p">,</span> <span class="n">torsion</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">factorial</span><span class="p">((</span><span class="n">p</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">abc_dual</span><span class="p">(</span><span class="n">psi_dual</span><span class="p">(</span><span class="n">phi_dual</span><span class="p">(</span><span class="n">minimal_cochain</span><span class="p">),</span><span class="n">n</span><span class="p">))</span><span class="o">.</span><span class="n">alex</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This can be compared to the method <code class="docutils literal notranslate"><span class="pre">Surjection.may_steenrod_structure</span></code> of
+the comch package that also computes higher cup products:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">comch</span><span class="w"> </span><span class="kn">import</span> <span class="n">Surjection</span><span class="o">.</span><span class="n">may_steenrod_structure</span>
+<span class="n">Surjection</span><span class="o">.</span><span class="n">may_steenrod_structure</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">torsion</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The higher cup products obtained here and comch are in general different,
+but for <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">=</span> <span class="pre">3</span></code> they agree up to sign.</p>
+</section>
+<section id="power-operations">
+<h2>Power operations<a class="headerlink" href="#power-operations" title="Link to this heading"></a></h2>
+<p>If <cite>X</cite> is a simplicial set and <span class="math notranslate nohighlight">\(s \leq 0\)</span>, there are power operations</p>
+<div class="math notranslate nohighlight">
+\[P_s \colon \mathrm{H}(\mathrm{N}^{\vee}(X)) \to \mathrm{H}(\mathrm{N}^{\vee}(X))\]</div>
+<div class="math notranslate nohighlight">
+\[\beta P_s \colon \mathrm{H}(\mathrm{N}^{\vee}(X)) \to \mathrm{H}(\mathrm{N}^{\vee}(X))\]</div>
+<p>of degree <span class="math notranslate nohighlight">\(2s(p-1)\)</span> and <span class="math notranslate nohighlight">\(2s(p-1) - 1\)</span> respectively.</p>
+<p>If <span class="math notranslate nohighlight">\(x\)</span> is a representative of a cohomology class of degree <cite>q</cite>, then
+a cochain representative <cite>y</cite> of <span class="math notranslate nohighlight">\(P_s([x])\)</span> or <span class="math notranslate nohighlight">\(\beta P_s([x])\)</span>
+is obtained as the only cochain whose evaluation on
+a chain <span class="math notranslate nohighlight">\(a\)</span> is the evaluation of <span class="math notranslate nohighlight">\(x^{\otimes p}\)</span> on the
+<cite>p</cite>-fold tensor <span class="math notranslate nohighlight">\(\smile_{p, (2s-q)(p-1)}\)</span>
+(or <span class="math notranslate nohighlight">\(\smile_{p, (2s-q)(p-1)+p}\)</span>):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">factorial</span>
+<span class="n">degree</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">p</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">s</span> <span class="o">-</span> <span class="n">bockstein</span><span class="p">)</span> <span class="o">*</span> <span class="n">p</span>
+<span class="n">n</span> <span class="o">=</span> <span class="o">-</span><span class="n">q</span> <span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">s</span><span class="o">*</span><span class="p">(</span><span class="n">p</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">bockstein</span>
+<span class="n">minimal_cochain</span> <span class="o">=</span> <span class="n">MinimalCochain</span><span class="p">({</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">},</span> <span class="n">degree</span><span class="o">=</span><span class="n">degree</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">p</span><span class="p">,</span> <span class="n">torsion</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
+<span class="n">factorial</span><span class="p">((</span><span class="n">p</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">abc_dual</span><span class="p">(</span><span class="n">psi_dual</span><span class="p">(</span><span class="n">phi_dual</span><span class="p">(</span><span class="n">minimal_cochain</span><span class="p">),</span><span class="n">n</span><span class="p">,</span><span class="n">homogeneous</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span><span class="o">.</span><span class="n">alex</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This can be compared to the method <code class="docutils literal notranslate"><span class="pre">Surjection.steenrod_chain</span></code> of comch:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">comch</span><span class="w"> </span><span class="kn">import</span> <span class="n">Surjection</span><span class="o">.</span><span class="n">steenrod_chain</span>
+<span class="n">Surjection</span><span class="o">.</span><span class="n">steenrod_chain</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">q</span><span class="p">,</span><span class="n">bockstein</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="power-operations-for-simplicial-complexes">
+<h2>Power operations for simplicial complexes<a class="headerlink" href="#power-operations-for-simplicial-complexes" title="Link to this heading"></a></h2>
+<p>The functions below allow to compute power operations on simplicial sets. Here
+are some applications: First, we bring the following simplicial complex on 19 vertices found
+by Bagchi and Datta [1] that is a model of <span class="math notranslate nohighlight">\(\mathbb{CP}^3\)</span>. We also bring in
+a representative of a generator of the second cohomology group, found using
+<code class="docutils literal notranslate"><span class="pre">sage.topology</span></code>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">oddp._samples</span><span class="w"> </span><span class="kn">import</span> <span class="n">CP3</span><span class="p">,</span> <span class="n">cochain_CP3</span>
+</pre></div>
+</div>
+<p>Now, we may apply either of the implementations below to find that the image
+of the class of this cochain under the power operation <span class="math notranslate nohighlight">\(P_{-1}\)</span> is
+non-trivial:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">power_operation_0</span><span class="p">(</span><span class="n">CP3</span><span class="p">,</span> <span class="n">cochain_CP3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">ParametricCounter({(2, 8, 10, 11, 13, 14, 18): 2}, torsion=3)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">power_operation_1</span><span class="p">(</span><span class="n">CP3</span><span class="p">,</span> <span class="n">cochain_CP3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">ParametricCounter({(2, 8, 10, 11, 13, 14, 18): 2}, torsion=3)</span>
+</pre></div>
+</div>
+<p>As a second example, we bring in the simplicial model of the Moore space
+for the group <span class="math notranslate nohighlight">\(\mathbb{Z}/3 \mathbb{Z}\)</span> implemented in <code class="docutils literal notranslate"><span class="pre">sage.topology</span></code>. A cochain
+generating the first cohomology group was found using <code class="docutils literal notranslate"><span class="pre">sage.topology</span></code> too.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">oddp._samples</span><span class="w"> </span><span class="kn">import</span> <span class="n">Moore3</span><span class="p">,</span> <span class="n">cochain_Moore3</span>
+</pre></div>
+</div>
+<p>Now, we may apply either of the implementations below to find that the image
+of the class of this cochain under the power operation <span class="math notranslate nohighlight">\(\beta P_{0}\)</span> is
+non-trivial:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">power_operation_0</span><span class="p">(</span><span class="n">Moore3</span><span class="p">,</span> <span class="n">cochain_Moore3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">bockstein</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">ParametricCounter({(4, 5, 6): 1}, torsion=3)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">power_operation_1</span><span class="p">(</span><span class="n">Moore3</span><span class="p">,</span> <span class="n">cochain_Moore3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">bockstein</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">ParametricCounter({(4, 5, 6): 1}, torsion=3)</span>
+</pre></div>
+</div>
+<p class="rubric">References</p>
+<p>[1] Bagchi, B., Datta, B. <em>A Triangulation of CP^3 as Symmetric Cube of S^2</em>.
+Discrete Comput Geom 48, 310–329 (2012).
+<a class="reference external" href="https://doi.org/10.1007/s00454-012-9436-2">https://doi.org/10.1007/s00454-012-9436-2</a></p>
+<p>[2] Cantero-Morán, F., Medina-Mardones, A., Steenrod operations and Tate
+resolutions.</p>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="oddp.powers.power_operation_0">
+<span class="sig-prename descclassname"><span class="pre">oddp.powers.</span></span><span class="sig-name descname"><span class="pre">power_operation_0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simplicial_complex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cochain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bockstein</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oddp/powers.html#power_operation_0"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#oddp.powers.power_operation_0" title="Link to this definition"></a></dt>
+<dd><p>Computes a representative of the power operation <span class="math notranslate nohighlight">\(P_s\)</span> applied to the cochain <strong>cochain</strong>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>simplicial_complex</strong> (<em>dict</em><em>[</em><em>int</em><em>, </em><em>set</em><em>]</em>) – A dictionary with the faces of the simplicial complex.</p></li>
+<li><p><strong>cochain</strong> (<em>dict</em><em>[</em><em>tuple</em><em>, </em><em>int</em><em>]</em>) – A dictionary representing a cochain in the simplicial complex.</p></li>
+<li><p><strong>p</strong> (<em>int</em>) – The order of the power operation.</p></li>
+<li><p><strong>s</strong> (<em>int</em>) – The index of the power operation.</p></li>
+<li><p><strong>q</strong> (<em>int</em>) – the degree of the cochain <strong>cochain</strong>.</p></li>
+<li><p><strong>bockstein</strong> (<em>bool</em>) – Whether the power operation includes the Bockstein or not.</p></li>
+<li><p><strong>comch</strong> (<em>TO BE REMOVED.</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="oddp.objects.html#oddp.objects.ParametricCounter" title="oddp.objects.ParametricCounter">ParametricCounter</a></p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This implementation requires N times S simple operations, where N is the
+number of summands in the corresponding cup-i product and S is the number
+of faces of dimension -q - 2(p-1)s + Bockstein.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="oddp.powers.power_operation_1">
+<span class="sig-prename descclassname"><span class="pre">oddp.powers.</span></span><span class="sig-name descname"><span class="pre">power_operation_1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simplicial_complex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cochain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bockstein</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oddp/powers.html#power_operation_1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#oddp.powers.power_operation_1" title="Link to this definition"></a></dt>
+<dd><p>Computes a representative of the power operation <span class="math notranslate nohighlight">\(P_s\)</span> applied to the cochain <strong>cochain</strong>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>simplicial_complex</strong> (<em>dict</em><em>[</em><em>int</em><em>, </em><em>set</em><em>]</em>) – A dictionary with the faces of the simplicial complex.</p></li>
+<li><p><strong>cochain</strong> (<em>dict</em><em>[</em><em>tuple</em><em>, </em><em>int</em><em>]</em>) – A dictionary representing a cochain in the simplicial complex.</p></li>
+<li><p><strong>p</strong> (<em>int</em>) – The order of the power operation.</p></li>
+<li><p><strong>s</strong> (<em>int</em>) – The index of the power operation.</p></li>
+<li><p><strong>q</strong> (<em>int</em>) – the degree of the cochain <strong>cochain</strong>.</p></li>
+<li><p><strong>bockstein</strong> (<em>bool</em>) – Whether the power operation includes the Bockstein or not.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="oddp.objects.html#oddp.objects.ParametricCounter" title="oddp.objects.ParametricCounter">ParametricCounter</a></p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This implementation requires binom(c,p) simple operations, where c is the
+number of summands of the cochain, p is the order of the power operation
+and binom is the binomial coefficient. This is a generalization of the
+implementation <code class="docutils literal notranslate"><span class="pre">steenrod_diagonal</span></code> from the package steenroder for <cite>p=2</cite>
+to odd primes.</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="oddp.chain_maps.html" class="btn btn-neutral float-left" title="oddp.chain_maps" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, fcmoran.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
