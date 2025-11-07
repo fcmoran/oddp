@@ -143,7 +143,26 @@ from itertools import permutations, combinations
 
 from oddp.chain_maps import phi_dual, psi_aux, psi_dual, abc, abc_dual
 from oddp.objects import ParametricCounter, MinimalCochain, TensorCochain
-from oddp._comparison import _conversion_comch_to_oddp
+
+def _conversion_comch_to_oddp(p, s, q, bockstein):
+    degree = s*2*(p-1)*p - bockstein*p
+    order = p
+    n = -q -s*2*(p-1) + bockstein
+    return order, degree, n
+
+def _conversion_oddp_to_comch(order, degree, n):
+    p = order
+    if degree % p == 0 and ((degree // p) - 1) % (2 * (p - 1)) == 0:
+        bockstein = True
+        s = - ((degree // p) - bockstein) // (2 * (p - 1))
+    elif degree % p == 0 and (degree // p) % (2 * (p - 1)) == 0:
+        bockstein = False
+        s = - ((degree // p) - bockstein) // (2 * (p - 1))
+    else:
+        return None
+    q = -n - s * 2 * (p - 1) + bockstein
+    return p, s, q, bockstein
+
 
 
 
