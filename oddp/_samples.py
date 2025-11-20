@@ -20,21 +20,23 @@ cochain_Moore3 = {(2, 3): 1, (3, 4): 2, (3, 5): 2, (3, 6): 2, (4, 5): 1, (4, 6):
 
 def suspension(sc):
     sc[-1] = {()}
-    sol = sc.copy()
+    sol = {j:set() for j in range(-1,max(sc.keys())+2)}
     m = max((v[0] for v in sc[0]))
     for dim, faces in sc.items():
-        sol[dim+1] = set()
         for face in faces:
+            sol[dim].add(face)
             sol[dim+1].add(face + (m + 1,))
             sol[dim+1].add(face + (m + 2,))
     return sol
 
-def cochain_suspension(cochain,sc):
+
+def cochain_suspension(cochain,sc,double=False):
     sol = {}
     m = max((v[0] for v in sc[0]))
     for a, b in cochain.items():
         sol.update({a + (m+1,):b})
-        sol.update({a + (m+2,): b})
+        if double:
+            sol.update({a + (m+2,): b})
     return sol
 
 def simplicial_join(x,y,n,q, extra):

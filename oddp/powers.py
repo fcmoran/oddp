@@ -143,6 +143,8 @@ from itertools import permutations, combinations
 
 from oddp.chain_maps import phi_dual, psi_aux, psi_dual, abc, abc_dual
 from oddp.objects import ParametricCounter, MinimalCochain, TensorCochain
+from oddp._utils import admissible_iterator, admissible_iterator_set
+
 
 def _conversion_comch_to_oddp(p, s, q, bockstein):
     degree = s*2*(p-1)*p - bockstein*p
@@ -260,6 +262,7 @@ def power_operation_1(simplicial_complex, cochain, p, s, q, bockstein = False):
     sol = ParametricCounter(torsion=order)
     # facets = tuple(sorted(simplicial_complex[n]))
     counter = 0
+    doit = True
     for cochain_fold in combinations(cochain.items(), order):
 
         top = set()
@@ -269,8 +272,8 @@ def power_operation_1(simplicial_complex, cochain, p, s, q, bockstein = False):
             b *= a
         top = tuple(sorted(top))
 
-        # if find(facets, top):
         if top in simplicial_complex[n]:
+            counter += 1
             u_tensor = []
             for cochain_element, a in cochain_fold:
                 diff = [j for j, v in enumerate(top) if v not in cochain_element]
@@ -297,3 +300,90 @@ def power_operation_1(simplicial_complex, cochain, p, s, q, bockstein = False):
                         sol += sol.create({top: c})
     return sol
 
+
+def power_operation_three(simplicial_complex, cochain, p, s, q, bockstein = False):
+    r"""
+    Computes a representative of :math:`P_s` for the prime 3 applied to the cochain **cochain**.
+
+    Parameters
+    ----------
+    simplicial_complex: dict[int, set]
+        A dictionary with the faces of the simplicial complex.
+    cochain: dict[tuple, int]
+        A dictionary representing a cochain in the simplicial complex.
+    p: 3
+        The order of the power operation.
+    s: int
+        The index of the power operation.
+    q: int
+        the degree of the cochain **cochain**.
+    bockstein: bool
+        Whether the power operation includes the Bockstein or not.
+
+    Returns
+    -------
+    ParametricCounter
+
+    Notes
+    -----
+    This implementation is similar to power_operation_1, but a bit faster.
+
+    """
+    if p != 3:
+        return NotImplemented
+
+    order, degree, n = _conversion_comch_to_oddp(p, s, q, bockstein)
+    signatures = psi_aux(phi_dual(MinimalCochain({0:1}, degree=degree, order=order, torsion=order)), n)
+    test = TensorCochain(degree=-degree, order=order, n=n, dual=False, torsion=order, sph_aug=True)
+    sol = ParametricCounter(torsion=order)
+    # facets = tuple(sorted(simplicial_complex[n]))
+
+    ord_cochain_list = sorted(cochain.items())
+
+    L = {}
+    for i, (key, value) in enumerate(ord_cochain_list):
+        new = []
+        top1=set(key)
+        for k,v in ord_cochain_list[i+1:]:
+            if len(top1.difference(k)) <= -2 * (3 - 1) * s:
+                new.append((k,v))
+        L[key] = new
+
+
+
+    for cochain_1, a1 in ord_cochain_list:
+        top1 = set(cochain_1)
+        cochain_fold = [cochain_1,(),()]
+        for cochain_2, a2 in L[cochain_1]:
+            top2 = top1.union(cochain_2)
+            cochain_fold[1] = cochain_2
+            for cochain_3, a3 in L[cochain_2]:
+                top3 = top2.union(cochain_3)
+                cochain_fold[2] = cochain_3
+                ttop = tuple(sorted(top3))
+                b = a1*a2*a3
+                if ttop in simplicial_complex[n]:
+                    u_tensor = []
+                    for cochain_element in cochain_fold:
+                        diff = [j for j, v in enumerate(ttop) if v not in cochain_element]
+                        if len(diff) == -2 * (p - 1) * s + bockstein:
+                            u_tensor.append(tuple(diff))
+                        else:
+                            break
+                    else:
+                        for tensor in permutations(u_tensor, order):
+
+                            tensor_cochain = test.create({tensor: b},
+                                                         degree=degree, dual=True)
+
+                            sign = next(iter(tensor_cochain.alex().values()))
+
+                            tensor_chain = test.create({tensor:b})
+                            milnor_chain = abc(tensor_chain)
+                            shape, c = next(iter(milnor_chain.items()))
+                            shape = tuple((a for a in shape if len(a)>0))
+                            c *= signatures.get(shape, 0) * b * sign
+
+                            if c:
+                                sol += sol.create({ttop: c})
+    return sol

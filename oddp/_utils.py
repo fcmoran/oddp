@@ -70,6 +70,60 @@ def partitions(face):
             partitions_1[k].update(partitions_0[k])
         return tuple(partitions_1)
 
+
+def admissible_iterator(basic: tuple, rule: dict, p: int):
+    M = [iter(basic)]
+    first = [None]
+    while len(first) > 0:
+        first.pop(-1)
+        while len(first) < p:
+            try:
+                first.append(next(M[-1]))
+                if len(first) < p:
+                    M.append(iter(rule[first[-1]]))
+            except StopIteration:
+                M.pop(-1)
+                try:
+                    first.pop(-1)
+                except IndexError:
+                    break
+        else:
+            yield first
+
+
+def admissible_iterator_set(basic: tuple, rule: dict, p: int):
+    M = [iter(basic)]
+    first = [None]
+    first_set = [None]
+    # a = [None]
+    while len(first) > 0:
+        first.pop(-1)
+        first_set.pop(-1)
+        # a.pop(-1)
+        while len(first) < p:
+            try:
+                new = next(M[-1])
+                first.append(new)
+                try:
+                    first_set.append(first_set[-1].union(new[0]))
+                    # a.append(a[-1] * new[1])
+                except IndexError:
+                    first_set.append(set(new[0]))
+                    # a.append(new[1])
+                if len(first) < p:
+                    M.append(iter(rule[first[-1][0]]))
+            except StopIteration:
+                M.pop(-1)
+                try:
+                    first.pop(-1)
+                    first_set.pop(-1)
+                    # a.pop(-1)
+                except IndexError:
+                    break
+        else:
+            yield first, first_set[-1] #, a[-1]
+
+
 def find(tup, i):
     j = bisect_left(tup, i)
     if j != len(tup) and tup[j] == i:

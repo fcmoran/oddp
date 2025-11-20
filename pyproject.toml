@@ -1,18 +1,17 @@
-[project]
-
 [build-system]
 requires = ["setuptools >= 77.0.3"]
 build-backend = "setuptools.build_meta"
 
+[project]
 name = "oddp"
-version = "0.0.1"
+version = "0.0.2"
 authors = [
   { name="Federico Cantero", email="federico.j.cantero@gmail.com" },
 ]
 description = "This package implements cochain-level formulas to compute odd power operations on simplicial sets. It also contains chain maps between three resolutions of the cyclic group"
 readme = "README.md"
 requires-python = ">=3.0"
-dependencies = "comch"
+dependencies = []
 classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
@@ -23,5 +22,5 @@ license-files = ["LICEN[CS]E*"]
 keywords = ["Steenrod operations", "power operations", "Tate cohomology"]
 
 [project.urls]
-Homepage = "https://github.com/pypa/sampleproject"
-Issues = "https://github.com/pypa/sampleproject/issues"
+Homepage = "https://github.com/fcmoran/oddp"
+Issues = "https://github.com/fcmoran/oddp/issues"

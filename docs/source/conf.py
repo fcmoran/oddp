@@ -6,7 +6,7 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'oddp_project'
+project = 'oddp'
 copyright = '2025, fcmoran'
 author = 'fcmoran'
 release = '0.0.1'
